@@ -8,25 +8,25 @@
       "company": "ANG Builders",
       "event": "2025 Havana Nights",
       "tier": "High Roller",
-      "filename": "ANG Builders High Roller Sponsor.jpg",
-      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/ANG%20Builders%20High%20Roller%20Sponsor.jpg",
+      "filename": "ang-builders--primary.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/ang-builders--primary.jpg",
       "format": "jpg",
       "variant": "primary",
       "approved_by": "Kristy Edwards-Polak",
       "date_added": "2025-10-31",
-      "notes": "Provided as JPEG; request SVG or transparent PNG (>=1000px) for next cycle."
+      "notes": "Renamed to kebab-case; request SVG or transparent PNG (>=1000px) later."
     },
     {
       "company": "Subaru of Daytona",
       "event": "2025 Havana Nights",
       "tier": "Palm Green",
-      "filename": "SubaruofDaytona.jpg",
-      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/SubaruofDaytona.jpg",
+      "filename": "subaru-of-daytona--primary.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/subaru-of-daytona--primary.jpg",
       "format": "jpg",
       "variant": "primary",
       "approved_by": "Kristy Edwards-Polak",
       "date_added": "2025-10-31",
-      "notes": "White background; ask for transparent PNG and brand hex codes."
+      "notes": "Renamed to kebab-case; ask for transparent PNG and brand hex codes."
     }
   ]
 }
