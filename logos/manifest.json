@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "generated": "2025-10-31",
+    "base_url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/"
+  },
+  "logos": [
+    {
+      "company": "ANG Builders",
+      "event": "2025 Havana Nights",
+      "tier": "High Roller",
+      "filename": "ANG Builders High Roller Sponsor.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/ANG%20Builders%20High%20Roller%20Sponsor.jpg",
+      "format": "jpg",
+      "variant": "primary",
+      "approved_by": "Kristy Edwards-Polak",
+      "date_added": "2025-10-31",
+      "notes": "Provided via email; low-res JPEG, request vector version next cycle."
+    },
+    {
+      "company": "Subaru of Daytona",
+      "event": "2025 Havana Nights",
+      "tier": "Palm Green",
+      "filename": "SubaruofDaytona.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/SubaruofDaytona.jpg",
+      "format": "jpg",
+      "variant": "primary",
+      "approved_by": "Kristy Edwards-Polak",
+      "date_added": "2025-10-31",
+      "notes": "Clean logo with white background."
+    }
+  ]
+}
