@@ -96,6 +96,11 @@ window.addEventListener('DOMContentLoaded', () => {
       if (tv && r.tier !== tv) return false;
       return true;
     });
+    // After: const rows = (data.logos || []).filter(...);
+rows.sort((a, b) =>
+  (a.tier_rank ?? 999) - (b.tier_rank ?? 999) ||
+  a.company.localeCompare(b.company)
+);
 
     grid.innerHTML = '';
     empty.hidden = rows.length !== 0;
@@ -147,13 +152,29 @@ window.addEventListener('DOMContentLoaded', () => {
     try {
       const data = await loadManifest();
 
-      // Populate filters
-      uniq(data.logos.map(r => r.tier)).forEach(v => {
-        const o = document.createElement('option'); o.value = v; o.textContent = v; tier.appendChild(o);
-      });
-      uniq(data.logos.map(r => r.event)).forEach(v => {
-        const o = document.createElement('option'); o.value = v; o.textContent = v; eventSel.appendChild(o);
-      });
+// Build a rank map so we can sort tier names by their lowest rank
+const rankByTier = {};
+(data.logos || []).forEach(r => {
+  const current = rankByTier[r.tier];
+  if (r.tier_rank != null) {
+    rankByTier[r.tier] = Math.min(current ?? Infinity, r.tier_rank);
+  } else if (current == null) {
+    rankByTier[r.tier] = 999; // unknowns go last
+  }
+});
+
+// Get unique tier names and sort by rank, then name
+const tierNames = [...new Set((data.logos || []).map(r => r.tier).filter(Boolean))]
+  .sort((a, b) => (rankByTier[a] ?? 999) - (rankByTier[b] ?? 999) || a.localeCompare(b));
+
+// Clear and repopulate the dropdown (keep "All tiers" at the top)
+while (tier.options.length > 1) tier.remove(1);
+tierNames.forEach(v => {
+  const o = document.createElement('option');
+  o.value = v;
+  o.textContent = v;
+  tier.appendChild(o);
+});
 
       // Wire up controls
       const refresh = () => render(data);
