@@ -37,18 +37,32 @@
     </div>
   </header>
 
-  <!-- These two IDs are REQUIRED by the script -->
+  <!-- Required containers (will also be auto-created if missing) -->
   <div id="grid" class="grid" role="list"></div>
   <div id="empty" class="empty" hidden>No results. Try clearing filters.</div>
 
   <footer>
-    Source: <code>/logos/manifest.json</code> • Base URL is read from the file’s <code>meta.base_url</code>.
+    Source: <code>/logos/manifest.json</code> • Base URL is read from <code>meta.base_url</code>.
   </footer>
 
 <script>
-(async function () {
-  const grid = document.getElementById('grid');
-  const empty = document.getElementById('empty');
+window.addEventListener('DOMContentLoaded', () => {
+  // Helper: ensure a DOM element exists; create it if missing
+  function ensure(id, className) {
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = id;
+      if (className) el.className = className;
+      // insert before footer if present, else at end of body
+      const foot = document.querySelector('footer');
+      (foot ? foot : document.body).before(el);
+    }
+    return el;
+  }
+
+  const grid = ensure('grid', 'grid');
+  const empty = ensure('empty', 'empty');
   const q = document.getElementById('q');
   const tier = document.getElementById('tier');
   const eventSel = document.getElementById('event');
@@ -56,7 +70,7 @@
   const reloadBtn = document.getElementById('reload');
 
   async function loadManifest() {
-    const cacheBust = '?ts=' + Date.now();             // force fresh fetch each time
+    const cacheBust = '?ts=' + Date.now(); // force fresh fetch
     const url = './logos/manifest.json' + cacheBust;
     console.log('Fetching manifest from:', url);
 
@@ -71,15 +85,15 @@
   function uniq(arr) { return [...new Set(arr.filter(Boolean))].sort(); }
 
   function render(data) {
-    const qv = q.value.trim().toLowerCase();
+    const qv = (q.value || '').trim().toLowerCase();
     const tv = tier.value;
     const ev = eventSel.value;
 
     const rows = (data.logos || []).filter(r => {
       const hay = [r.company, r.event, r.tier, r.variant, r.format, r.filename].join(' ').toLowerCase();
       if (qv && !hay.includes(qv)) return false;
-      if (tv && r.tier !== tv) return false;
       if (ev && r.event !== ev) return false;
+      if (tv && r.tier !== tv) return false;
       return true;
     });
 
@@ -126,40 +140,41 @@
       });
     });
 
-    // Tiny feedback so you know render happened
     console.log('Render complete. If you see no cards, check that logos/manifest.json has a "logos" array.');
   }
 
-  try {
-    const data = await loadManifest();
+  (async () => {
+    try {
+      const data = await loadManifest();
 
-    // Populate filters
-    uniq(data.logos.map(r => r.tier)).forEach(v => {
-      const o = document.createElement('option'); o.value = v; o.textContent = v; tier.appendChild(o);
-    });
-    uniq(data.logos.map(r => r.event)).forEach(v => {
-      const o = document.createElement('option'); o.value = v; o.textContent = v; eventSel.appendChild(o);
-    });
+      // Populate filters
+      uniq(data.logos.map(r => r.tier)).forEach(v => {
+        const o = document.createElement('option'); o.value = v; o.textContent = v; tier.appendChild(o);
+      });
+      uniq(data.logos.map(r => r.event)).forEach(v => {
+        const o = document.createElement('option'); o.value = v; o.textContent = v; eventSel.appendChild(o);
+      });
 
-    // Wire up controls
-    const refresh = () => render(data);
-    q.addEventListener('input', refresh);
-    tier.addEventListener('change', refresh);
-    eventSel.addEventListener('change', refresh);
-    reloadBtn.addEventListener('click', async () => {
-      try { const fresh = await loadManifest(); render(fresh); }
-      catch (e) { alert('Reload failed: ' + e.message); }
-    });
+      // Wire up controls
+      const refresh = () => render(data);
+      q.addEventListener('input', refresh);
+      tier.addEventListener('change', refresh);
+      eventSel.addEventListener('change', refresh);
+      reloadBtn.addEventListener('click', async () => {
+        try { const fresh = await loadManifest(); render(fresh); }
+        catch (e) { alert('Reload failed: ' + e.message); }
+      });
 
-    // Initial paint
-    render(data);
-  } catch (e) {
-    grid.innerHTML = '';
-    empty.hidden = false;
-    empty.textContent = 'Could not load logos/manifest.json — add the file, then refresh.';
-    console.error(e);
-  }
-})();
+      // First paint
+      render(data);
+    } catch (e) {
+      grid.innerHTML = '';
+      empty.hidden = false;
+      empty.textContent = 'Could not load logos/manifest.json — add the file, then refresh.';
+      console.error(e);
+    }
+  })();
+});
 </script>
 </body>
 </html>
