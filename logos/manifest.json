@@ -5,28 +5,92 @@
   },
   "logos": [
     {
+      "company": "Volusia County Sheriff's Office",
+      "event": "2025 Havana Nights",
+      "tier": "Havana Gold Sponsors",
+      "tier_rank": 2,
+      "filename": "vc-sheriffs-department--primary.png",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/vc-sheriffs-department--primary.png",
+      "format": "png",
+      "variant": "primary",
+      "notes": "Consider transparent PNG or SVG."
+    },
+    {
+      "company": "MBI Direct Mail",
+      "event": "2025 Havana Nights",
+      "tier": "Tropical Blue Sponsors",
+      "tier_rank": 3,
+      "filename": "mbi-direct-mail--primary.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/mbi-direct-mail--primary.jpg",
+      "format": "jpg",
+      "variant": "primary",
+      "notes": "Request transparent PNG or SVG if available."
+    },
+    {
+      "company": "Southern Stone Communications",
+      "event": "2025 Havana Nights",
+      "tier": "Tropical Blue Sponsors",
+      "tier_rank": 3,
+      "filename": "southern-stone-communications-logo--primary.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/southern-stone-communications-logo--primary.jpg",
+      "format": "jpg",
+      "variant": "primary",
+      "notes": "Request transparent PNG or SVG if available."
+    },
+    {
+      "company": "Security Pro",
+      "event": "2025 Havana Nights",
+      "tier": "Sunset Orange Sponsors",
+      "tier_rank": 4,
+      "filename": "security-pro--primary.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/security-pro--primary.jpg",
+      "format": "jpg",
+      "variant": "primary",
+      "notes": "Request transparent PNG or SVG if available."
+    },
+    {
       "company": "ANG Builders",
       "event": "2025 Havana Nights",
-      "tier": "High Roller",
+      "tier": "Palm Green Sponsors",
+      "tier_rank": 5,
       "filename": "ang-builders--primary.jpg",
       "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/ang-builders--primary.jpg",
       "format": "jpg",
       "variant": "primary",
-      "approved_by": "Kristy Edwards-Polak",
-      "date_added": "2025-10-31",
-      "notes": "Renamed to kebab-case; request SVG or transparent PNG (>=1000px) later."
+      "notes": ""
     },
     {
       "company": "Subaru of Daytona",
       "event": "2025 Havana Nights",
-      "tier": "Palm Green",
+      "tier": "Palm Green Sponsors",
+      "tier_rank": 5,
       "filename": "subaru-of-daytona--primary.jpg",
       "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/subaru-of-daytona--primary.jpg",
       "format": "jpg",
       "variant": "primary",
-      "approved_by": "Kristy Edwards-Polak",
-      "date_added": "2025-10-31",
-      "notes": "Renamed to kebab-case; ask for transparent PNG and brand hex codes."
+      "notes": ""
+    },
+    {
+      "company": "Cool Breeze Heating & Air",
+      "event": "2025 Havana Nights",
+      "tier": "Palm Green Sponsors",
+      "tier_rank": 5,
+      "filename": "cool-breeze-logo--primary.jpg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/cool-breeze-logo--primary.jpg",
+      "format": "jpg",
+      "variant": "primary",
+      "notes": ""
+    },
+    {
+      "company": "Jared Meyers (Tom James Suits)",
+      "event": "2025 Havana Nights",
+      "tier": "Caribbean Coral Sponsors",
+      "tier_rank": 6,
+      "filename": "tj-logo-horiz--primary.svg",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/tj-logo-horiz--primary.svg",
+      "format": "svg",
+      "variant": "primary",
+      "notes": "Vector (great!)."
     }
   ]
 }
