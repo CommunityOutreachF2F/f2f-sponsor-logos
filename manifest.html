@@ -53,11 +53,19 @@
   const eventSel = document.getElementById('event');
   const copyCsvBtn = document.getElementById('copyCsv');
   const reloadBtn = document.getElementById('reload');
+async function loadManifest() {
+  // cache-buster: forces the browser to fetch a fresh copy every time
+  const cacheBust = '?ts=' + Date.now();
 
-  async function loadManifest() {
-    const res = await fetch('./logos/manifest.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error('manifest.json not found');
-    return res.json();
-  }
+  const url = './logos/manifest.json' + cacheBust;
+  console.log('Fetching manifest from:', url);
+
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('manifest.json not found');
+
+  const data = await res.json();
+  console.log('Loaded', Array.isArray(data.logos) ? data.logos.length : 0, 'logo rows.');
+  return data;
+}
 
   function uniq(arr) { return [...ne]()
