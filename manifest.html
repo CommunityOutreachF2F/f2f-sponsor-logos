@@ -7,11 +7,14 @@
   <style>
     :root { --gap:16px; --radius:14px; --shadow: 0 6px 18px rgba(0,0,0,.08); }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
-    header { display:flex; flex-wrap:wrap; gap: var(--gap); align-items:center; margin-bottom: 16px; }
+    header { display:flex; flex-wrap:wrap; gap: var(--gap); align-items:center; margin-bottom: 12px; }
     h1 { font-size: 1.25rem; margin: 0; }
     .controls { display:flex; flex-wrap:wrap; gap: var(--gap); align-items:center; }
     input, select, button { padding: 10px 12px; border-radius: 10px; border: 1px solid #d6d6d6; }
     input[type="search"] { min-width: 260px; }
+    .legend { display:flex; gap:10px; flex-wrap:wrap; margin: 8px 0 18px; }
+    .legend-item { display:flex; align-items:center; gap:8px; font-size:.9rem; color:#333; }
+    .swatch { width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,.1); }
     .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--gap); }
     .card { background:#fff; border:1px solid #eee; border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; display:flex; flex-direction:column; gap:10px; }
     .meta { font-size: .9rem; color:#555; line-height:1.3; }
@@ -37,32 +40,58 @@
     </div>
   </header>
 
-  <!-- Required containers (will also be auto-created if missing) -->
+  <!-- Legend strip -->
+  <div id="legend" class="legend"></div>
+
+  <!-- Required containers -->
   <div id="grid" class="grid" role="list"></div>
   <div id="empty" class="empty" hidden>No results. Try clearing filters.</div>
 
   <footer>
     Source: <code>/logos/manifest.json</code> • Base URL is read from <code>meta.base_url</code>.
+    <br>Last updated: <strong id="lastUpdated">—</strong>
   </footer>
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-  // Helper: ensure a DOM element exists; create it if missing
+  // ---- Tier colors & helpers ----
+  const TIER_STYLES = {
+    "El Presidente Sponsor":    { bg: "#222222" },   // deep neutral
+    "Havana Gold Sponsors":     { bg: "#E0B400" },   // gold
+    "Tropical Blue Sponsors":   { bg: "#48B1D8" },   // tropical blue
+    "Sunset Orange Sponsors":   { bg: "#FF7A45" },   // orange
+    "Palm Green Sponsors":      { bg: "#30C487" },   // palm green
+    "Caribbean Coral Sponsors": { bg: "#FF6F61" }    // coral
+  };
+
+  function pickTextColor(hex) {
+    const c = hex.replace('#','');
+    const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+    const yiq = (r*299 + g*587 + b*114) / 1000;
+    return yiq >= 150 ? "#1e1e1e" : "#ffffff";
+  }
+  function tierStyle(tierName) {
+    const bg = (TIER_STYLES[tierName]?.bg) || "#eef5ff";
+    const fg = pickTextColor(bg);
+    return { bg, fg, bar: bg };
+  }
+
+  // Ensure essential nodes exist
   function ensure(id, className) {
     let el = document.getElementById(id);
     if (!el) {
       el = document.createElement('div');
       el.id = id;
       if (className) el.className = className;
-      // insert before footer if present, else at end of body
       const foot = document.querySelector('footer');
       (foot ? foot : document.body).before(el);
     }
     return el;
   }
 
-  const grid = ensure('grid', 'grid');
-  const empty = ensure('empty', 'empty');
+  const legend = ensure('legend','legend');
+  const grid = ensure('grid','grid');
+  const empty = ensure('empty','empty');
   const q = document.getElementById('q');
   const tier = document.getElementById('tier');
   const eventSel = document.getElementById('event');
@@ -70,13 +99,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const reloadBtn = document.getElementById('reload');
 
   async function loadManifest() {
-    const cacheBust = '?ts=' + Date.now(); // force fresh fetch
+    const cacheBust = '?ts=' + Date.now();
     const url = './logos/manifest.json' + cacheBust;
     console.log('Fetching manifest from:', url);
-
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('manifest.json not found');
-
     const data = await res.json();
     console.log('Loaded', Array.isArray(data.logos) ? data.logos.length : 0, 'logo rows.');
     return data;
@@ -84,23 +111,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function uniq(arr) { return [...new Set(arr.filter(Boolean))].sort(); }
 
+  function renderLegend(tierNames, rankByTier) {
+    legend.innerHTML = '';
+    tierNames
+      .sort((a,b) => (rankByTier[a] ?? 999) - (rankByTier[b] ?? 999) || a.localeCompare(b))
+      .forEach(name => {
+        const s = tierStyle(name);
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `<span class="swatch" style="background:${s.bg}"></span><span>${name}</span>`;
+        legend.appendChild(item);
+      });
+  }
+
   function render(data) {
     const qv = (q.value || '').trim().toLowerCase();
     const tv = tier.value;
     const ev = eventSel.value;
 
-    const rows = (data.logos || []).filter(r => {
+    let rows = (data.logos || []).filter(r => {
       const hay = [r.company, r.event, r.tier, r.variant, r.format, r.filename].join(' ').toLowerCase();
       if (qv && !hay.includes(qv)) return false;
       if (ev && r.event !== ev) return false;
       if (tv && r.tier !== tv) return false;
       return true;
     });
-    // After: const rows = (data.logos || []).filter(...);
-rows.sort((a, b) =>
-  (a.tier_rank ?? 999) - (b.tier_rank ?? 999) ||
-  a.company.localeCompare(b.company)
-);
+
+    // Sort by tier_rank, then company
+    rows.sort((a, b) =>
+      (a.tier_rank ?? 999) - (b.tier_rank ?? 999) ||
+      a.company.localeCompare(b.company)
+    );
 
     grid.innerHTML = '';
     empty.hidden = rows.length !== 0;
@@ -109,13 +150,14 @@ rows.sort((a, b) =>
       const card = document.createElement('article');
       card.className = 'card';
       const imgURL = r.url || (data.meta?.base_url ? data.meta.base_url + (r.path || r.filename) : r.filename);
+      const style = tierStyle(r.tier);
 
       card.innerHTML = `
-        <div class="logo-wrap">
+        <div class="logo-wrap" style="border-top: 4px solid ${style.bar}; border-top-left-radius: 12px; border-top-right-radius: 12px;">
           <img src="${imgURL}" alt="${r.company}">
         </div>
         <div class="row">
-          <span class="pill">${r.tier || 'Tier n/a'}</span>
+          <span class="pill" style="background:${style.bg}; color:${style.fg}">${r.tier || 'Tier n/a'}</span>
           <span class="pill">${r.variant || 'variant'}</span>
           <span class="pill">${(r.format || '').toUpperCase()}</span>
         </div>
@@ -131,7 +173,7 @@ rows.sort((a, b) =>
       grid.appendChild(card);
     });
 
-    // Copy URL buttons
+    // Copy buttons
     grid.querySelectorAll('button[data-copy]').forEach(btn => {
       btn.addEventListener('click', async () => {
         const val = btn.getAttribute('data-copy');
@@ -152,29 +194,288 @@ rows.sort((a, b) =>
     try {
       const data = await loadManifest();
 
-// Build a rank map so we can sort tier names by their lowest rank
-const rankByTier = {};
-(data.logos || []).forEach(r => {
-  const current = rankByTier[r.tier];
-  if (r.tier_rank != null) {
-    rankByTier[r.tier] = Math.min(current ?? Infinity, r.tier_rank);
-  } else if (current == null) {
-    rankByTier[r.tier] = 999; // unknowns go last
+      // Last updated
+      const ts = data.meta?.generated || "";
+      const lastEl = document.getElementById('lastUpdated');
+      if (lastEl) lastEl.textContent = ts;
+
+      // Rank map for tiers
+      const rankByTier = {};
+      (data.logos || []).forEach(r => {
+        const current = rankByTier[r.tier];
+        if (r.tier_rank != null) {
+          rankByTier[r.tier] = Math.min(current ?? Infinity, r.tier_rank);
+        } else if (current == null) {
+          rankByTier[r.tier] = 999;
+        }
+      });
+
+      // Populate tier dropdown (sorted by rank)
+      const tierNames = [...new Set((data.logos || []).map(r => r.tier).filter(Boolean))]
+        .sort((a, b) => (rankByTier[a] ?? 999) - (rankByTier[b] ?? 999) || a.localeCompare(b));
+      while (tier.options.length > 1) tier.remove(1);
+      tierNames.forEach(v => {
+        const o = document.createElement('option'); o.value = v; o.textContent = v; tier.appendChild(o);
+      });
+
+      // Populate event dropdown (alpha)
+      uniq((data.logos || []).map(r => r.event)).forEach(v => {
+        const o = document.createElement('option'); o.value = v; o.textContent = v; eventSel.appendChild(o);
+      });
+
+      // Legend
+      renderLegend(tierNames, rankByTier);
+
+      // Wire up controls
+      const refresh = () => render(data);
+      q.addEventListener('input', refresh);
+      tier.addEventListener('change', refresh);
+      eventSel.addEventListener('change', refresh);
+      reloadBtn.addEventListener('click', async () => {
+        try { const fresh = await loadManifest(); render(fresh); }
+        catch (e) { alert('Reload failed: ' + e.message); }
+      });
+
+      // First paint
+      render(data);
+    } catch (e) {
+      grid.innerHTML = '';
+      empty.hidden = false;
+      empty.textContent = 'Could not load logos/manifest.json — add the file, then refresh.';
+      console.error(e);
+    }
+  })();
+});
+</script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>F2F Sponsor Logos – Manifest Viewer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    :root { --gap:16px; --radius:14px; --shadow: 0 6px 18px rgba(0,0,0,.08); }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
+    header { display:flex; flex-wrap:wrap; gap: var(--gap); align-items:center; margin-bottom: 12px; }
+    h1 { font-size: 1.25rem; margin: 0; }
+    .controls { display:flex; flex-wrap:wrap; gap: var(--gap); align-items:center; }
+    input, select, button { padding: 10px 12px; border-radius: 10px; border: 1px solid #d6d6d6; }
+    input[type="search"] { min-width: 260px; }
+    .legend { display:flex; gap:10px; flex-wrap:wrap; margin: 8px 0 18px; }
+    .legend-item { display:flex; align-items:center; gap:8px; font-size:.9rem; color:#333; }
+    .swatch { width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,.1); }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--gap); }
+    .card { background:#fff; border:1px solid #eee; border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; display:flex; flex-direction:column; gap:10px; }
+    .meta { font-size: .9rem; color:#555; line-height:1.3; }
+    .logo-wrap { background:#fafafa; border:1px dashed #e6e6e6; border-radius: 12px; padding: 14px; display:flex; justify-content:center; align-items:center; min-height:120px; }
+    .logo-wrap img { max-height:72px; width:auto; object-fit:contain; }
+    .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .btn { cursor:pointer; background:#0b62d6; color:#fff; border:none; border-radius:10px; padding:10px 12px; }
+    .btn.secondary { background:#f1f3f5; color:#222; border:1px solid #e6e6e6; }
+    .pill { background:#eef5ff; color:#0b62d6; padding:2px 8px; border-radius: 999px; font-size:.8rem; }
+    footer { margin-top: 24px; color:#666; font-size: .9rem; }
+    .empty { padding:24px; border:1px dashed #ddd; border-radius:12px; text-align:center; color:#555; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>F2F Sponsor Logos – Manifest Viewer</h1>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Search company, event, tier…">
+      <select id="tier"><option value="">All tiers</option></select>
+      <select id="event"><option value="">All events</option></select>
+      <button class="btn" id="copyCsv">Copy rows as CSV</button>
+      <button class="btn secondary" id="reload">Reload</button>
+    </div>
+  </header>
+
+  <!-- Legend strip -->
+  <div id="legend" class="legend"></div>
+
+  <!-- Required containers -->
+  <div id="grid" class="grid" role="list"></div>
+  <div id="empty" class="empty" hidden>No results. Try clearing filters.</div>
+
+  <footer>
+    Source: <code>/logos/manifest.json</code> • Base URL is read from <code>meta.base_url</code>.
+    <br>Last updated: <strong id="lastUpdated">—</strong>
+  </footer>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  // ---- Tier colors & helpers ----
+  const TIER_STYLES = {
+    "El Presidente Sponsor":    { bg: "#222222" },   // deep neutral
+    "Havana Gold Sponsors":     { bg: "#E0B400" },   // gold
+    "Tropical Blue Sponsors":   { bg: "#48B1D8" },   // tropical blue
+    "Sunset Orange Sponsors":   { bg: "#FF7A45" },   // orange
+    "Palm Green Sponsors":      { bg: "#30C487" },   // palm green
+    "Caribbean Coral Sponsors": { bg: "#FF6F61" }    // coral
+  };
+
+  function pickTextColor(hex) {
+    const c = hex.replace('#','');
+    const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+    const yiq = (r*299 + g*587 + b*114) / 1000;
+    return yiq >= 150 ? "#1e1e1e" : "#ffffff";
   }
-});
+  function tierStyle(tierName) {
+    const bg = (TIER_STYLES[tierName]?.bg) || "#eef5ff";
+    const fg = pickTextColor(bg);
+    return { bg, fg, bar: bg };
+  }
 
-// Get unique tier names and sort by rank, then name
-const tierNames = [...new Set((data.logos || []).map(r => r.tier).filter(Boolean))]
-  .sort((a, b) => (rankByTier[a] ?? 999) - (rankByTier[b] ?? 999) || a.localeCompare(b));
+  // Ensure essential nodes exist
+  function ensure(id, className) {
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = id;
+      if (className) el.className = className;
+      const foot = document.querySelector('footer');
+      (foot ? foot : document.body).before(el);
+    }
+    return el;
+  }
 
-// Clear and repopulate the dropdown (keep "All tiers" at the top)
-while (tier.options.length > 1) tier.remove(1);
-tierNames.forEach(v => {
-  const o = document.createElement('option');
-  o.value = v;
-  o.textContent = v;
-  tier.appendChild(o);
-});
+  const legend = ensure('legend','legend');
+  const grid = ensure('grid','grid');
+  const empty = ensure('empty','empty');
+  const q = document.getElementById('q');
+  const tier = document.getElementById('tier');
+  const eventSel = document.getElementById('event');
+  const copyCsvBtn = document.getElementById('copyCsv');
+  const reloadBtn = document.getElementById('reload');
+
+  async function loadManifest() {
+    const cacheBust = '?ts=' + Date.now();
+    const url = './logos/manifest.json' + cacheBust;
+    console.log('Fetching manifest from:', url);
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('manifest.json not found');
+    const data = await res.json();
+    console.log('Loaded', Array.isArray(data.logos) ? data.logos.length : 0, 'logo rows.');
+    return data;
+  }
+
+  function uniq(arr) { return [...new Set(arr.filter(Boolean))].sort(); }
+
+  function renderLegend(tierNames, rankByTier) {
+    legend.innerHTML = '';
+    tierNames
+      .sort((a,b) => (rankByTier[a] ?? 999) - (rankByTier[b] ?? 999) || a.localeCompare(b))
+      .forEach(name => {
+        const s = tierStyle(name);
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `<span class="swatch" style="background:${s.bg}"></span><span>${name}</span>`;
+        legend.appendChild(item);
+      });
+  }
+
+  function render(data) {
+    const qv = (q.value || '').trim().toLowerCase();
+    const tv = tier.value;
+    const ev = eventSel.value;
+
+    let rows = (data.logos || []).filter(r => {
+      const hay = [r.company, r.event, r.tier, r.variant, r.format, r.filename].join(' ').toLowerCase();
+      if (qv && !hay.includes(qv)) return false;
+      if (ev && r.event !== ev) return false;
+      if (tv && r.tier !== tv) return false;
+      return true;
+    });
+
+    // Sort by tier_rank, then company
+    rows.sort((a, b) =>
+      (a.tier_rank ?? 999) - (b.tier_rank ?? 999) ||
+      a.company.localeCompare(b.company)
+    );
+
+    grid.innerHTML = '';
+    empty.hidden = rows.length !== 0;
+
+    rows.forEach(r => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      const imgURL = r.url || (data.meta?.base_url ? data.meta.base_url + (r.path || r.filename) : r.filename);
+      const style = tierStyle(r.tier);
+
+      card.innerHTML = `
+        <div class="logo-wrap" style="border-top: 4px solid ${style.bar}; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+          <img src="${imgURL}" alt="${r.company}">
+        </div>
+        <div class="row">
+          <span class="pill" style="background:${style.bg}; color:${style.fg}">${r.tier || 'Tier n/a'}</span>
+          <span class="pill">${r.variant || 'variant'}</span>
+          <span class="pill">${(r.format || '').toUpperCase()}</span>
+        </div>
+        <div class="meta">
+          <strong>${r.company}</strong><br>
+          ${r.event || ''}${r.event ? ' • ' : ''}${r.filename}
+        </div>
+        <div class="row">
+          <button class="btn" data-copy="${imgURL}">Copy URL</button>
+          <a class="btn secondary" href="${imgURL}" target="_blank" rel="noopener">Open</a>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    // Copy buttons
+    grid.querySelectorAll('button[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const val = btn.getAttribute('data-copy');
+        try {
+          await navigator.clipboard.writeText(val);
+          btn.textContent = 'Copied!';
+          setTimeout(() => (btn.textContent = 'Copy URL'), 1200);
+        } catch {
+          prompt('Copy URL:', val);
+        }
+      });
+    });
+
+    console.log('Render complete. If you see no cards, check that logos/manifest.json has a "logos" array.');
+  }
+
+  (async () => {
+    try {
+      const data = await loadManifest();
+
+      // Last updated
+      const ts = data.meta?.generated || "";
+      const lastEl = document.getElementById('lastUpdated');
+      if (lastEl) lastEl.textContent = ts;
+
+      // Rank map for tiers
+      const rankByTier = {};
+      (data.logos || []).forEach(r => {
+        const current = rankByTier[r.tier];
+        if (r.tier_rank != null) {
+          rankByTier[r.tier] = Math.min(current ?? Infinity, r.tier_rank);
+        } else if (current == null) {
+          rankByTier[r.tier] = 999;
+        }
+      });
+
+      // Populate tier dropdown (sorted by rank)
+      const tierNames = [...new Set((data.logos || []).map(r => r.tier).filter(Boolean))]
+        .sort((a, b) => (rankByTier[a] ?? 999) - (rankByTier[b] ?? 999) || a.localeCompare(b));
+      while (tier.options.length > 1) tier.remove(1);
+      tierNames.forEach(v => {
+        const o = document.createElement('option'); o.value = v; o.textContent = v; tier.appendChild(o);
+      });
+
+      // Populate event dropdown (alpha)
+      uniq((data.logos || []).map(r => r.event)).forEach(v => {
+        const o = document.createElement('option'); o.value = v; o.textContent = v; eventSel.appendChild(o);
+      });
+
+      // Legend
+      renderLegend(tierNames, rankByTier);
 
       // Wire up controls
       const refresh = () => render(data);
