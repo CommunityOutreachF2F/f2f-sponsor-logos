@@ -91,6 +91,17 @@
       "format": "svg",
       "variant": "primary",
       "notes": "Vector (great!)."
-    }
+    },
+{
+  "company": "Recovery Village",
+  "event": "2025 Havana Nights",
+  "tier": "Caribbean Coral Sponsors",
+  "tier_rank": 6,
+  "filename": "recovery-village--primary.png",
+  "url": "https://github.com/CommunityOutreachF2F/f2f-sponsor-logos/blob/main/recovery-village--primary.png",
+  "format": "png",
+  "variant": "primary",
+  "notes": ""
+}
   ]
 }
