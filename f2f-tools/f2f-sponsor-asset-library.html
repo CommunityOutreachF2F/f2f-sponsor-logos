@@ -48,7 +48,7 @@
   <div id="empty" class="empty" hidden>No results. Try clearing filters.</div>
 
   <footer>
-    Source: <code>/logos/manifest.json</code> • Base URL is read from <code>meta.base_url</code>.
+    Source: <code>/f2f-sponsor-logos/manifest.json</code> • Base URL is read from <code>meta.base_url</code>.
     <br>Last updated: <strong id="lastUpdated">—</strong>
   </footer>
 
@@ -187,7 +187,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    console.log('Render complete. If you see no cards, check that logos/manifest.json has a "logos" array.');
+    console.log('Render complete. If you see no cards, check that f2f-sponsor-logos/manifest.json has a "logos" array.');
   }
 
   (async () => {
@@ -241,7 +241,7 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       grid.innerHTML = '';
       empty.hidden = false;
-      empty.textContent = 'Could not load logos/manifest.json — add the file, then refresh.';
+      empty.textContent = 'Could not load f2f-sponsor-logos/manifest.json — add the file, then refresh.';
       console.error(e);
     }
   })();
