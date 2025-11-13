@@ -3,10 +3,15 @@
   "event_date": "January 31, 2026",
   "order": [
     "01-hero.html",
-    "02-sponsor-strip.html",
-    "03-donate-cta.html",
-    "04-auction-highlights.html",
-    "05-schedule.html",
+    "02-why-your-gift-matters.html",
+    "03-sponsor-a-client.html",
+    "04-about-the-gala.html",
+    "05-event-highlights.html",
     "06-faq.html"
+    "07-testimonial.html"
+    "08-sponsor-strip.html"
+    "09-donate-cta.html"
+    "10-auction-highlights.html"
+    "11-schedule.html"
   ]
 }
