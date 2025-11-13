@@ -1,0 +1,12 @@
+{
+  "event_name": "Havana Nights Gala",
+  "event_date": "January 31, 2026",
+  "order": [
+    "01-hero.html",
+    "02-sponsor-strip.html",
+    "03-donate-cta.html",
+    "04-auction-highlights.html",
+    "05-schedule.html",
+    "06-faq.html"
+  ]
+}
