@@ -1,0 +1,11 @@
+{
+  "event_name": "EVENT NAME HERE",
+  "event_date": "DATE HERE",
+  "order": [
+    "01-hero.html",
+    "02-about.html",
+    "03-highlights.html",
+    "04-sponsor-strip.html",
+    "05-cta.html"
+  ]
+}
