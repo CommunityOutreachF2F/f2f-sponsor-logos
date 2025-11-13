@@ -91,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
   async function loadEvent(slug) {
     clearMessage();
     wrap.innerHTML = '';
-    const base = `./f2f-events/2026-havana-nights/${slug}/`;
+    const base = `../f2f-events/${slug}/`;
     console.log('Loading event:', slug, 'base =', base);
 
     let meta;
@@ -112,7 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     for (const file of order) {
       try {
-        const html = await fetchText(base + file);
+        const html = await fetchText(base + 'html/' + file);
 
         // Container for the section + controls
         const sec = document.createElement('section');
@@ -122,7 +122,7 @@ window.addEventListener('DOMContentLoaded', () => {
           <div class="actions">
             <strong>${file}</strong>
             <button type="button" data-copy>Copy HTML</button>
-            <a href="${base + file}" target="_blank" rel="noopener">Open file</a>
+            <a href="${base + 'html/' + file}" target="_blank" rel="noopener">Open file</a>
           </div>
           <div class="preview"></div>
         `;
@@ -148,7 +148,7 @@ window.addEventListener('DOMContentLoaded', () => {
       } catch (e) {
         console.error(e);
         showMessage('Error loading section file "' + file +
-          '". Check that it exists in f2f-events/2026-havana-nights/' + slug + '/');
+          '". Check that it exists in f2f-events/2026-havana-nights/' + slug + '/html/');
       }
     }
   }
