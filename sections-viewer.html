@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sections Viewer</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="./sections.css">
+<style>
+.toolbar{display:flex;gap:10px;align-items:center;padding:12px 18px;border-bottom:1px solid #eee}
+select,button{padding:10px 12px;border:1px solid #d6d6d6;border-radius:10px}
+#wrap{max-width:1100px;margin:0 auto}
+.actions{display:flex;gap:8px;margin:6px 0 18px}
+.small{font-size:12px;color:#666}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <div><strong>Event:</strong></div>
+  <select id="eventSel">
+    <option value="2026-havana-nights">2026 – Havana Nights</option>
+    <!-- Add future events here, e.g. 2026-spring-benefit -->
+  </select>
+  <button id="reload">Reload</button>
+  <span class="small">Tip: Click “Copy HTML” on a section to paste into Qgiv.</span>
+</div>
+<div id="wrap"></div>
+
+<script>
+(async function(){
+  const wrap = document.getElementById('wrap');
+  const eventSel = document.getElementById('eventSel');
+  const reloadBtn = document.getElementById('reload');
+
+  async function fetchText(path){ const r=await fetch(path,{cache:'no-store'}); if(!r.ok) throw new Error(path+' not found'); return r.text(); }
+  async function fetchJSON(path){ const r=await fetch(path,{cache:'no-store'}); if(!r.ok) throw new Error(path+' not found'); return r.json(); }
+
+  async function loadEvent(eventSlug){
+    wrap.innerHTML = '';
+    const base = `./sections/${eventSlug}/`;
+    const meta = await fetchJSON(base + 'meta.json');
+    const order = meta.order || [];
+    for (const file of order){
+      const html = await fetchText(base + file);
+      const sec = document.createElement('section');
+      sec.className='section';
+      sec.innerHTML = `
+        <div class="actions">
+          <strong>${file}</strong>
+          <button data-copy>Copy HTML</button>
+          <a href="${base+file}" target="_blank" rel="noopener">Open file</a>
+        </div>
+        <div class="preview">${html}</div>
+      `;
+      // Render the actual section markup below actions
+      const preview = sec.querySelector('.preview');
+      preview.outerHTML = html;
+
+      // Wire copy button (copies the raw HTML of the section file)
+      sec.querySelector('[data-copy]').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(html.trim());
+          const btn = sec.querySelector('[data-copy]');
+          btn.textContent='Copied!';
+          setTimeout(()=>btn.textContent='Copy HTML',1000);
+        } catch {
+          alert('Copy failed—your browser blocked it. Open file and copy manually.');
+        }
+      });
+
+      wrap.appendChild(sec);
+    }
+  }
+
+  reloadBtn.addEventListener('click', ()=>loadEvent(eventSel.value));
+  eventSel.addEventListener('change', ()=>loadEvent(eventSel.value));
+  loadEvent(eventSel.value);
+})();
+</script>
+</body>
+</html>
