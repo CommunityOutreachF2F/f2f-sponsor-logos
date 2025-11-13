@@ -4,6 +4,17 @@
     "base_url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/"
   },
   "logos": [
+        {
+      "company": "Family Health Source",
+      "event": "2025 Havana Nights",
+      "tier": "El Presidente Sponsor",
+      "tier_rank": 1,
+      "filename": "family-health-source-logo--primary.png",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/family-health-source-logo--primary.png",
+      "format": "png",
+      "variant": "primary",
+      "notes": "Consider transparent PNG or SVG."
+    },
     {
       "company": "Volusia County Sheriff's Office",
       "event": "2025 Havana Nights",
@@ -100,6 +111,17 @@
       "filename": "cool-breeze-logo--primary.jpg",
       "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/cool-breeze-logo--primary.jpg",
       "format": "jpg",
+      "variant": "primary",
+      "notes": ""
+    },
+     {
+      "company": "Quality Quickprint",
+      "event": "2025 Havana Nights",
+      "tier": "Palm Green Sponsors",
+      "tier_rank": 5,
+      "filename": "quality-print-logo--primary.png",
+      "url": "https://communityoutreachf2f.github.io/f2f-sponsor-logos/quality-print-logo--primary.png",
+      "format": "png",
       "variant": "primary",
       "notes": ""
     },
