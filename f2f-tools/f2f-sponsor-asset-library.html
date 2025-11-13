@@ -100,7 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   async function loadManifest() {
     const cacheBust = '?ts=' + Date.now();
-    const url = './logos/manifest.json' + cacheBust;
+    const url = './f2f-sponsor-logos/manifest.json' + cacheBust;
     console.log('Fetching manifest from:', url);
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('manifest.json not found');
