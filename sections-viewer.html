@@ -1,80 +1,164 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Sections Viewer</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="./sections.css">
-<style>
-.toolbar{display:flex;gap:10px;align-items:center;padding:12px 18px;border-bottom:1px solid #eee}
-select,button{padding:10px 12px;border:1px solid #d6d6d6;border-radius:10px}
-#wrap{max-width:1100px;margin:0 auto}
-.actions{display:flex;gap:8px;margin:6px 0 18px}
-.small{font-size:12px;color:#666}
-</style>
+  <meta charset="utf-8">
+  <title>F2F Event Sections Viewer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="./sections.css">
+  <style>
+    body { background:#f7f7f7; }
+    .toolbar {
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:12px 18px;
+      border-bottom:1px solid #eee;
+      background:#fff;
+    }
+    select,button {
+      padding:10px 12px;
+      border:1px solid #d6d6d6;
+      border-radius:10px;
+      background:#fff;
+    }
+    #wrap { max-width:1100px; margin:0 auto; padding-bottom:32px; }
+    .actions {
+      display:flex;
+      gap:8px;
+      margin:6px 0 14px;
+      align-items:center;
+      font-size:14px;
+    }
+    .actions strong { font-size:13px; color:#555; }
+    .small { font-size:12px; color:#666; }
+    .msg {
+      max-width:1100px;
+      margin:20px auto;
+      padding:16px;
+      border-radius:10px;
+      background:#fff3cd;
+      border:1px solid #ffeeba;
+      color:#856404;
+      font-size:14px;
+    }
+  </style>
 </head>
 <body>
-<div class="toolbar">
-  <div><strong>Event:</strong></div>
-  <select id="eventSel">
-    <option value="2026-havana-nights">2026 – Havana Nights</option>
-    <!-- Add future events here, e.g. 2026-spring-benefit -->
-  </select>
-  <button id="reload">Reload</button>
-  <span class="small">Tip: Click “Copy HTML” on a section to paste into Qgiv.</span>
-</div>
-<div id="wrap"></div>
+  <div class="toolbar">
+    <div><strong>Event:</strong></div>
+    <select id="eventSel">
+      <option value="2026-havana-nights">2026 – Havana Nights Gala</option>
+      <!-- Future events can be added here -->
+    </select>
+    <button id="reloadBtn">Reload</button>
+    <span class="small">Tip: Click “Copy HTML” to paste into Qgiv.</span>
+  </div>
+
+  <div id="message" class="msg" style="display:none;"></div>
+  <div id="wrap"></div>
 
 <script>
-(async function(){
-  const wrap = document.getElementById('wrap');
+window.addEventListener('DOMContentLoaded', () => {
+  const wrap   = document.getElementById('wrap');
+  const msgBox = document.getElementById('message');
   const eventSel = document.getElementById('eventSel');
-  const reloadBtn = document.getElementById('reload');
+  const reloadBtn = document.getElementById('reloadBtn');
 
-  async function fetchText(path){ const r=await fetch(path,{cache:'no-store'}); if(!r.ok) throw new Error(path+' not found'); return r.text(); }
-  async function fetchJSON(path){ const r=await fetch(path,{cache:'no-store'}); if(!r.ok) throw new Error(path+' not found'); return r.json(); }
+  function showMessage(text) {
+    msgBox.textContent = text;
+    msgBox.style.display = 'block';
+  }
 
-  async function loadEvent(eventSlug){
+  function clearMessage() {
+    msgBox.style.display = 'none';
+    msgBox.textContent = '';
+  }
+
+  async function fetchText(path) {
+    console.log('Fetching text:', path);
+    const res = await fetch(path, { cache:'no-store' });
+    if (!res.ok) throw new Error(path + ' → ' + res.status);
+    return res.text();
+  }
+
+  async function fetchJSON(path) {
+    console.log('Fetching JSON:', path);
+    const res = await fetch(path, { cache:'no-store' });
+    if (!res.ok) throw new Error(path + ' → ' + res.status);
+    return res.json();
+  }
+
+  async function loadEvent(slug) {
+    clearMessage();
     wrap.innerHTML = '';
-    const base = `./sections/${eventSlug}/`;
-    const meta = await fetchJSON(base + 'meta.json');
+    const base = `./sections/${slug}/`;
+    console.log('Loading event:', slug, 'base =', base);
+
+    let meta;
+    try {
+      meta = await fetchJSON(base + 'meta.json');
+    } catch (e) {
+      console.error(e);
+      showMessage('Could not load meta.json for event "' + slug +
+        '". Check that sections/' + slug + '/meta.json exists and is valid JSON.');
+      return;
+    }
+
     const order = meta.order || [];
-    for (const file of order){
-      const html = await fetchText(base + file);
-      const sec = document.createElement('section');
-      sec.className='section';
-      sec.innerHTML = `
-        <div class="actions">
-          <strong>${file}</strong>
-          <button data-copy>Copy HTML</button>
-          <a href="${base+file}" target="_blank" rel="noopener">Open file</a>
-        </div>
-        <div class="preview">${html}</div>
-      `;
-      // Render the actual section markup below actions
-      const preview = sec.querySelector('.preview');
-      preview.outerHTML = html;
+    if (!order.length) {
+      showMessage('meta.json has no "order" array or it is empty.');
+      return;
+    }
 
-      // Wire copy button (copies the raw HTML of the section file)
-      sec.querySelector('[data-copy]').addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(html.trim());
-          const btn = sec.querySelector('[data-copy]');
-          btn.textContent='Copied!';
-          setTimeout(()=>btn.textContent='Copy HTML',1000);
-        } catch {
-          alert('Copy failed—your browser blocked it. Open file and copy manually.');
-        }
-      });
+    for (const file of order) {
+      try {
+        const html = await fetchText(base + file);
 
-      wrap.appendChild(sec);
+        // Container for the section + controls
+        const sec = document.createElement('section');
+        sec.className = 'section';
+
+        sec.innerHTML = `
+          <div class="actions">
+            <strong>${file}</strong>
+            <button type="button" data-copy>Copy HTML</button>
+            <a href="${base + file}" target="_blank" rel="noopener">Open file</a>
+          </div>
+          <div class="preview"></div>
+        `;
+
+        // Render the actual HTML markup inside .preview
+        const preview = sec.querySelector('.preview');
+        preview.innerHTML = html;
+
+        // Wire up Copy HTML button
+        const btn = sec.querySelector('[data-copy]');
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(html.trim());
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy HTML', 1000);
+          } catch (err) {
+            console.error(err);
+            alert('Copy failed. You may need to copy manually from "Open file".');
+          }
+        });
+
+        wrap.appendChild(sec);
+      } catch (e) {
+        console.error(e);
+        showMessage('Error loading section file "' + file +
+          '". Check that it exists in sections/' + slug + '/');
+      }
     }
   }
 
-  reloadBtn.addEventListener('click', ()=>loadEvent(eventSel.value));
-  eventSel.addEventListener('change', ()=>loadEvent(eventSel.value));
+  reloadBtn.addEventListener('click', () => loadEvent(eventSel.value));
+  eventSel.addEventListener('change', () => loadEvent(eventSel.value));
+
+  // Initial load
   loadEvent(eventSel.value);
-})();
+});
 </script>
 </body>
 </html>
