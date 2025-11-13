@@ -91,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
   async function loadEvent(slug) {
     clearMessage();
     wrap.innerHTML = '';
-    const base = `./sections/${slug}/`;
+    const base = `./f2f-events/2026-havana-nights/${slug}/`;
     console.log('Loading event:', slug, 'base =', base);
 
     let meta;
@@ -100,7 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.error(e);
       showMessage('Could not load meta.json for event "' + slug +
-        '". Check that sections/' + slug + '/meta.json exists and is valid JSON.');
+        '". Check that f2f-events/2026-havana-nights/' + slug + '/meta.json exists and is valid JSON.');
       return;
     }
 
@@ -148,7 +148,7 @@ window.addEventListener('DOMContentLoaded', () => {
       } catch (e) {
         console.error(e);
         showMessage('Error loading section file "' + file +
-          '". Check that it exists in sections/' + slug + '/');
+          '". Check that it exists in f2f-events/2026-havana-nights/' + slug + '/');
       }
     }
   }
