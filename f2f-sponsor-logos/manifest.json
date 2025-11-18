@@ -150,11 +150,12 @@
   ]
 },
 { 
-  "company": "Recovery Village", 
+  "company": "The Valle Home Group", 
   "event": "2025 Havana Nights", 
   "tier": "Caribbean Coral Sponsors",
-  "tier_rank": 5, 
-  "filename": "recovery-village--primary.png", 
+  "tier_rank": 6, 
+  "filename": "valle-home-group-logo--primary.png", 
   "variant": "primary", 
-  "format": "png" 
+  "format": "png"
+  "notes": ""
 }
