@@ -35,7 +35,7 @@ f2f-digital-hub/
 
 ### **1. Sponsor Asset Library**
 Use to view all logos, sort by tier/event, filter, and copy direct CDN URLs.
-- URL: `/f2f-tools/f2f-sponsor-asset-library.html`
+- URL: `https://communityoutreachf2f.github.io/f2f-digital-hub/f2f-tools/f2f-sponsor-asset-library.html`
 - Reads from: `f2f-sponsor-logos/manifest.json`
 
 ### **2. Event Sections Viewer**
