@@ -2,67 +2,140 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>F2F Event Sections Viewer</title>
+  <title>Foundations to Freedom – Event Sections Library</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="./sections.css">
   <style>
-    body { background:#f7f7f7; }
+    body { background:#f7f7f7; margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
     .toolbar {
       display:flex;
+      flex-wrap:wrap;
       gap:10px;
       align-items:center;
       padding:12px 18px;
       border-bottom:1px solid #eee;
       background:#fff;
     }
-    select,button {
-      padding:10px 12px;
+    .toolbar label { font-size:14px; color:#333; display:flex; align-items:center; gap:6px; }
+    select, button, input[type="search"] {
+      padding:8px 10px;
       border:1px solid #d6d6d6;
-      border-radius:10px;
+      border-radius:8px;
       background:#fff;
-    }
-    #wrap { max-width:1100px; margin:0 auto; padding-bottom:32px; }
-    .actions {
-      display:flex;
-      gap:8px;
-      margin:6px 0 14px;
-      align-items:center;
       font-size:14px;
     }
-    .actions strong { font-size:13px; color:#555; }
-    .small { font-size:12px; color:#666; }
+    input[type="search"] { min-width:220px; }
+    .small { font-size:12px; color:#666; margin-left:auto; }
+    #wrap { max-width:1100px; margin:0 auto 32px; padding:16px 12px 32px; }
     .msg {
       max-width:1100px;
-      margin:20px auto;
-      padding:16px;
+      margin:16px auto;
+      padding:12px 14px;
       border-radius:10px;
       background:#fff3cd;
       border:1px solid #ffeeba;
       color:#856404;
       font-size:14px;
     }
+    .section-header {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin:10px 0 6px;
+      font-size:14px;
+    }
+    .section-header strong { font-family:monospace; }
+    .section-header button {
+      padding:6px 9px;
+      font-size:13px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    .section-header a {
+      padding:6px 9px;
+      font-size:13px;
+      border-radius:8px;
+      border:1px solid #d0d0d0;
+      text-decoration:none;
+      color:#333;
+      background:#fff;
+    }
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      padding:2px 8px;
+      border-radius:999px;
+      background:#eef5ff;
+      color:#0b62d6;
+      font-size:11px;
+      margin-left:6px;
+    }
+    .preview {
+      background:#fff;
+      border-radius:12px;
+      border:1px solid #e5e5e5;
+      padding:14px 16px;
+      box-shadow:0 4px 14px rgba(0,0,0,.03);
+    }
+    .search-hit-count {
+      font-size:12px;
+      color:#555;
+      margin:0 0 8px 4px;
+    }
   </style>
 </head>
 <body>
   <div class="toolbar">
-    <div><strong>Event:</strong></div>
-    <select id="eventSel">
-      <option value="2026-havana-nights">2026 – Havana Nights Gala</option>
-      <!-- Future events can be added here -->
-    </select>
-    <button id="reloadBtn">Reload</button>
-    <span class="small">Tip: Click “Copy HTML” to paste into Qgiv.</span>
+    <label>
+      <span><strong>Event:</strong></span>
+      <select id="eventSel"></select>
+    </label>
+
+    <button id="reloadBtn" type="button">Reload</button>
+
+    <label>
+      <span>Search sections:</span>
+      <input id="searchBox" type="search" placeholder="Search filename or text…">
+    </label>
+
+    <span class="small">Tip: Use “Copy HTML” to paste a section directly into Qgiv.</span>
   </div>
 
   <div id="message" class="msg" style="display:none;"></div>
-  <div id="wrap"></div>
+  <div id="wrap">
+    <p id="searchCount" class="search-hit-count" style="display:none;"></p>
+  </div>
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-  const wrap   = document.getElementById('wrap');
-  const msgBox = document.getElementById('message');
-  const eventSel = document.getElementById('eventSel');
-  const reloadBtn = document.getElementById('reloadBtn');
+  // --- Configure events here as you add new folders ---
+  const EVENTS = [
+    { slug: '2026-havana-nights', label: '2026 – Havana Nights Gala' }
+    // Example future event:
+    // { slug: '2027-spring-fundraiser', label: '2027 – Spring Fundraiser' }
+  ];
+
+  const wrap       = document.getElementById('wrap');
+  const msgBox     = document.getElementById('message');
+  const eventSel   = document.getElementById('eventSel');
+  const reloadBtn  = document.getElementById('reloadBtn');
+  const searchBox  = document.getElementById('searchBox');
+  const searchCount= document.getElementById('searchCount');
+
+  let currentSlug  = EVENTS[0]?.slug || null;
+  let sectionsData = [];  // {file, html, element}
+
+  // Populate event dropdown
+  function initEventSelect() {
+    eventSel.innerHTML = '';
+    EVENTS.forEach(ev => {
+      const opt = document.createElement('option');
+      opt.value = ev.slug;
+      opt.textContent = ev.label;
+      eventSel.appendChild(opt);
+    });
+    if (currentSlug) eventSel.value = currentSlug;
+  }
 
   function showMessage(text) {
     msgBox.textContent = text;
@@ -90,7 +163,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
   async function loadEvent(slug) {
     clearMessage();
-    wrap.innerHTML = '';
+    wrap.querySelectorAll('section.section').forEach(s => s.remove());
+    searchBox.value = '';
+    searchCount.style.display = 'none';
+    sectionsData = [];
+    currentSlug = slug;
+
+    if (!slug) {
+      showMessage('No event selected.');
+      return;
+    }
+
+    // base: ../f2f-events/<slug>/
     const base = `../f2f-events/${slug}/`;
     console.log('Loading event:', slug, 'base =', base);
 
@@ -99,8 +183,10 @@ window.addEventListener('DOMContentLoaded', () => {
       meta = await fetchJSON(base + 'meta.json');
     } catch (e) {
       console.error(e);
-      showMessage('Could not load meta.json for event "' + slug +
-        '". Check that f2f-events/2026-havana-nights/' + slug + '/meta.json exists and is valid JSON.');
+      showMessage(
+        'Could not load meta.json for event "' + slug +
+        '". Check that ../f2f-events/' + slug + '/meta.json exists and is valid JSON.'
+      );
       return;
     }
 
@@ -117,10 +203,12 @@ window.addEventListener('DOMContentLoaded', () => {
         // Container for the section + controls
         const sec = document.createElement('section');
         sec.className = 'section';
+        sec.dataset.file = file;
 
         sec.innerHTML = `
-          <div class="actions">
+          <div class="section-header">
             <strong>${file}</strong>
+            <span class="pill">HTML section</span>
             <button type="button" data-copy>Copy HTML</button>
             <a href="${base + 'html/' + file}" target="_blank" rel="noopener">Open file</a>
           </div>
@@ -145,19 +233,78 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         wrap.appendChild(sec);
+
+        // Store data for searching
+        sectionsData.push({
+          file,
+          html,
+          element: sec
+        });
+
       } catch (e) {
         console.error(e);
-        showMessage('Error loading section file "' + file +
-          '". Check that it exists in f2f-events/2026-havana-nights/' + slug + '/html/');
+        showMessage(
+          'Error loading section file "' + file +
+          '". Check that it exists in ../f2f-events/' + slug + '/html/.'
+        );
       }
+    }
+
+    applySearchFilter(); // ensure search text is applied after load
+  }
+
+  function applySearchFilter() {
+    const query = (searchBox.value || '').toLowerCase().trim();
+
+    if (!sectionsData.length) {
+      searchCount.style.display = 'none';
+      return;
+    }
+
+    let visibleCount = 0;
+
+    sectionsData.forEach(({ file, html, element }) => {
+      if (!query) {
+        element.style.display = '';
+        visibleCount++;
+        return;
+      }
+
+      const haystack = (file + ' ' + element.textContent).toLowerCase();
+      const match = haystack.includes(query);
+      element.style.display = match ? '' : 'none';
+      if (match) visibleCount++;
+    });
+
+    if (query) {
+      searchCount.textContent = `${visibleCount} section(s) match “${query}”`;
+      searchCount.style.display = 'block';
+    } else {
+      searchCount.style.display = 'none';
     }
   }
 
-  reloadBtn.addEventListener('click', () => loadEvent(eventSel.value));
-  eventSel.addEventListener('change', () => loadEvent(eventSel.value));
+  // --- Wire up controls ---
+  reloadBtn.addEventListener('click', () => {
+    loadEvent(eventSel.value);
+  });
 
-  // Initial load
-  loadEvent(eventSel.value);
+  eventSel.addEventListener('change', () => {
+    loadEvent(eventSel.value);
+  });
+
+  searchBox.addEventListener('input', () => {
+    applySearchFilter();
+  });
+
+  // Initial setup & load
+  initEventSelect();
+  if (currentSlug) {
+    eventSel.value = currentSlug;
+    loadEvent(currentSlug);
+  } else {
+    showMessage('No events configured. Please add at least one entry to the EVENTS array in sections-viewer.html.');
+  }
 });
 </script>
 </body>
