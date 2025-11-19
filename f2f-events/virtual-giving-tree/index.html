@@ -5,9 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Virtual Giving Tree</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Analytics 4 (replace G-XXXXXXX with your real ID) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX'); // TODO: swap with your GA4 Measurement ID
+  </script>
 </head>
 <body>
   <div class="vgt-page">
+    <!-- Snow layer sits on top but ignores clicks -->
+    <div class="vgt-snow-layer" aria-hidden="true"></div>
+
     <header class="vgt-header">
       <h1>Virtual Giving Tree</h1>
       <p>Pick a tag. Share some hope this holiday season.</p>
@@ -17,7 +29,12 @@
       <section class="vgt-tree-panel">
         <div class="vgt-tree">
           <div class="vgt-tree-leaves">
-            <!-- Ornaments are defined in HTML so positions can be controlled in CSS -->
+            <!-- Twinkling light strings -->
+            <div class="vgt-light-string vgt-light-string--top"></div>
+            <div class="vgt-light-string vgt-light-string--middle"></div>
+            <div class="vgt-light-string vgt-light-string--bottom"></div>
+
+            <!-- Ornaments: positions handled in CSS -->
             <button class="vgt-ornament" data-id="warm-wishes">
               <span class="vgt-amount">$5</span>
             </button>
@@ -64,6 +81,9 @@
       <p>Foundations to Freedom &middot; Virtual Giving Tree</p>
     </footer>
   </div>
+
+  <!-- Chime sound on hover/click (upload "ornament-chime.mp3" next to these files) -->
+  <audio id="vgt-chime-audio" src="ornament-chime.mp3" preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>
