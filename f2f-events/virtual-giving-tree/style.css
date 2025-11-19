@@ -1,0 +1,255 @@
+:root {
+  --vgt-blue: #0054b8;
+  --vgt-green: #1c7c4d;
+  --vgt-bg: #f6f8fb;
+  --vgt-card-bg: #ffffff;
+  --vgt-text: #1e2733;
+  --vgt-muted: #5c6674;
+  --vgt-accent: #ffd88a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: var(--vgt-bg);
+  color: var(--vgt-text);
+}
+
+.vgt-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 24px;
+}
+
+.vgt-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.vgt-header h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  color: var(--vgt-blue);
+}
+
+.vgt-header p {
+  margin: 0;
+  color: var(--vgt-muted);
+}
+
+.vgt-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto 24px;
+}
+
+.vgt-tree-panel,
+.vgt-details-panel {
+  background: var(--vgt-card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+}
+
+/* Tree */
+
+.vgt-tree {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.vgt-tree-leaves {
+  position: relative;
+  width: 80%;
+  height: 72%;
+  margin-bottom: 10px;
+  background: radial-gradient(circle at top, #2fa96b, var(--vgt-green));
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.15);
+}
+
+.vgt-tree-trunk {
+  width: 18%;
+  height: 14%;
+  background: #7b4e27;
+  border-radius: 6px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Ornaments */
+
+.vgt-ornament {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  background: #ff6b6b;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  appearance: none;
+  outline: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.vgt-ornament .vgt-amount {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.vgt-ornament:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.3);
+}
+
+.vgt-ornament.vgt-active {
+  background: var(--vgt-accent);
+  color: var(--vgt-blue);
+}
+
+.vgt-ornament-heart {
+  background: #f97316;
+}
+
+/* Position ornaments by data-id (percentages relative to tree-leaves box) */
+
+.vgt-ornament[data-id="warm-wishes"] {
+  top: 18%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="cozy-comfort"] {
+  top: 32%;
+  left: 28%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="fresh-start-kit"] {
+  top: 34%;
+  left: 72%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="hot-meal-hope"] {
+  top: 52%;
+  left: 35%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="bridge-stability"] {
+  top: 54%;
+  left: 65%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="safe-housing"] {
+  top: 68%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="give-heart"] {
+  top: 12%;
+  left: 25%;
+  transform: translate(-50%, -50%);
+}
+
+/* Details panel */
+
+.vgt-details-panel h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.4rem;
+  color: var(--vgt-blue);
+}
+
+.vgt-detail-amount {
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--vgt-green);
+}
+
+.vgt-detail-description {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--vgt-text);
+}
+
+.vgt-donate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: none;
+  background: var(--vgt-blue);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.98rem;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.vgt-donate-button:hover {
+  background: #07448f;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.3);
+}
+
+.vgt-small-note {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--vgt-muted);
+}
+
+/* Footer */
+
+.vgt-footer {
+  text-align: center;
+  margin-top: auto;
+  font-size: 0.85rem;
+  color: var(--vgt-muted);
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .vgt-main {
+    grid-template-columns: 1fr;
+  }
+
+  .vgt-tree-panel,
+  .vgt-details-panel {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
