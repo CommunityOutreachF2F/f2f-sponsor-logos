@@ -22,17 +22,24 @@ body {
   color: var(--vgt-text);
 }
 
+/* Page wrapper – make it easy to drop inside iframes/Divi */
 .vgt-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 24px;
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden; /* hide snow overflow */
 }
 
 .vgt-header {
   text-align: center;
   margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
 }
 
 .vgt-header h1 {
@@ -53,6 +60,8 @@ body {
   max-width: 1100px;
   width: 100%;
   margin: 0 auto 24px;
+  position: relative;
+  z-index: 2;
 }
 
 .vgt-tree-panel,
@@ -79,20 +88,89 @@ body {
 
 .vgt-tree-leaves {
   position: relative;
-  width: 80%;
-  height: 72%;
+  width: 82%;
+  height: 74%;
   margin-bottom: 10px;
-  background: radial-gradient(circle at top, #2fa96b, var(--vgt-green));
-  border-radius: 50% 50% 40% 40%;
+  background: radial-gradient(circle at 30% 0%, #34d399, #166534);
   box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.15);
+  /* Spruce / Christmas tree silhouette */
+  clip-path: polygon(
+    50% 0%,
+    60% 10%,
+    52% 12%,
+    70% 22%,
+    58% 24%,
+    80% 38%,
+    65% 40%,
+    88% 56%,
+    70% 58%,
+    92% 78%,
+    70% 80%,
+    80% 92%,
+    50% 100%,
+    20% 92%,
+    30% 80%,
+    8% 78%,
+    30% 58%,
+    12% 56%,
+    35% 40%,
+    20% 38%,
+    42% 24%,
+    30% 22%,
+    48% 12%,
+    40% 10%
+  );
 }
 
+/* Trunk */
+
 .vgt-tree-trunk {
-  width: 18%;
+  width: 22%;
   height: 14%;
   background: #7b4e27;
   border-radius: 6px;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Twinkling light strings */
+
+.vgt-light-string {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 12px;
+  background-repeat: repeat-x;
+  background-size: 32px 12px;
+  background-position: 0 center;
+  pointer-events: none;
+  z-index: 1;
+  /* bulbs */
+  background-image:
+    radial-gradient(circle at 4px 6px, #ffe6a7 0, #ffe6a7 45%, transparent 60%),
+    radial-gradient(circle at 20px 6px, #fecaca 0, #fecaca 45%, transparent 60%),
+    radial-gradient(circle at 36px 6px, #bfdbfe 0, #bfdbfe 45%, transparent 60%),
+    radial-gradient(circle at 52px 6px, #bbf7d0 0, #bbf7d0 45%, transparent 60%);
+  animation: vgt-twinkle 2.2s ease-in-out infinite alternate;
+}
+
+.vgt-light-string::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px;
+  border-top: 2px solid rgba(255, 255, 255, 0.5);
+  opacity: 0.8;
+}
+
+.vgt-light-string--top {
+  top: 26%;
+}
+.vgt-light-string--middle {
+  top: 45%;
+}
+.vgt-light-string--bottom {
+  top: 64%;
 }
 
 /* Ornaments */
@@ -112,8 +190,12 @@ body {
   padding: 0;
   appearance: none;
   outline: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    filter 0.15s ease;
+  z-index: 2;
 }
 
 .vgt-ornament .vgt-amount {
@@ -123,8 +205,9 @@ body {
 }
 
 .vgt-ornament:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.3);
+  transform: translate(-50%, -50%) scale(1.06);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.9);
+  filter: brightness(1.05);
 }
 
 .vgt-ornament.vgt-active {
@@ -132,11 +215,12 @@ body {
   color: var(--vgt-blue);
 }
 
+/* Heart ornament */
 .vgt-ornament-heart {
   background: #f97316;
 }
 
-/* Position ornaments by data-id (percentages relative to tree-leaves box) */
+/* Positions (relative to tree-leaves box) */
 
 .vgt-ornament[data-id="warm-wishes"] {
   top: 18%;
@@ -214,8 +298,7 @@ body {
   font-size: 0.98rem;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.25);
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .vgt-donate-button:hover {
@@ -237,6 +320,52 @@ body {
   margin-top: auto;
   font-size: 0.85rem;
   color: var(--vgt-muted);
+  position: relative;
+  z-index: 2;
+}
+
+/* Snowfall */
+
+.vgt-snow-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vgt-snowflake {
+  position: absolute;
+  top: -10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  animation-name: vgt-snowfall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Keyframes */
+
+@keyframes vgt-twinkle {
+  0% {
+    opacity: 0.5;
+    filter: brightness(0.8);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes vgt-snowfall {
+  0% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(110vh);
+  }
 }
 
 /* Responsive */
