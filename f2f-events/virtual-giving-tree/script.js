@@ -1,8 +1,6 @@
-// Set this to your actual donation link:
-// - Could be the Virtual Giving Tree page on your site
-// - Or the direct PayPal donate link
-const DONATION_URL = "https://www.foundationstofreedom.org/virtual-giving-tree/";
-// example placeholder, swap for real link when ready
+// Main donation link – now set to your PayPal Giving Tree payment URL
+const DONATION_URL =
+  "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
 
 const tiers = [
   {
@@ -62,8 +60,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const amountEl = document.getElementById("vgt-detail-amount");
   const descEl = document.getElementById("vgt-detail-description");
   const donateBtn = document.getElementById("vgt-donate-button");
+  const chimeAudio = document.getElementById("vgt-chime-audio");
+  const snowLayer = document.querySelector(".vgt-snow-layer");
 
   let activeTier = null;
+
+  // --- Snowfall setup ---
+  if (snowLayer) {
+    const FLAKES = 60;
+    for (let i = 0; i < FLAKES; i++) {
+      const flake = document.createElement("span");
+      flake.className = "vgt-snowflake";
+      flake.style.left = Math.random() * 100 + "%";
+      flake.style.animationDelay = (Math.random() * 10).toFixed(2) + "s";
+      flake.style.animationDuration = (8 + Math.random() * 8).toFixed(2) + "s";
+      flake.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+      snowLayer.appendChild(flake);
+    }
+  }
 
   function setActiveTier(tierId) {
     const tier = tiers.find((t) => t.id === tierId);
@@ -81,22 +95,48 @@ document.addEventListener("DOMContentLoaded", () => {
         ? "Custom amount"
         : `Suggested gift: ${tier.amountLabel}`;
     descEl.textContent = tier.description;
+
+    // GA4 event (safe even if gtag is not defined)
+    if (window.gtag) {
+      window.gtag("event", "select_virtual_tree_tier", {
+        tier_id: tier.id,
+        tier_title: tier.title,
+        amount_label: tier.amountLabel,
+      });
+    }
   }
 
   ornaments.forEach((orn) => {
     orn.addEventListener("click", () => {
       setActiveTier(orn.dataset.id);
+
+      // Play chime sound on click (if file exists / allowed)
+      if (chimeAudio) {
+        try {
+          chimeAudio.currentTime = 0;
+          chimeAudio.play().catch(() => {});
+        } catch (err) {
+          // ignore if autoplay is blocked
+        }
+      }
     });
   });
 
   donateBtn.addEventListener("click", () => {
-    // Just send them to the main donation URL.
-    // They’ll enter their amount there (based on the tag they chose).
+    // GA4 event for donate button
+    if (window.gtag) {
+      window.gtag("event", "click_virtual_tree_donate", {
+        tier_id: activeTier ? activeTier.id : null,
+        tier_title: activeTier ? activeTier.title : null,
+        amount_label: activeTier ? activeTier.amountLabel : null,
+      });
+    }
+
     if (DONATION_URL) {
       window.open(DONATION_URL, "_blank");
     }
   });
 
-  // Optionally select a default ornament on load:
+  // Optionally select a default ornament on load
   // setActiveTier("warm-wishes");
 });
