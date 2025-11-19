@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Giving Tree</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="vgt-page">
+    <header class="vgt-header">
+      <h1>Virtual Giving Tree</h1>
+      <p>Pick a tag. Share some hope this holiday season.</p>
+    </header>
+
+    <main class="vgt-main">
+      <section class="vgt-tree-panel">
+        <div class="vgt-tree">
+          <div class="vgt-tree-leaves">
+            <!-- Ornaments are defined in HTML so positions can be controlled in CSS -->
+            <button class="vgt-ornament" data-id="warm-wishes">
+              <span class="vgt-amount">$5</span>
+            </button>
+            <button class="vgt-ornament" data-id="cozy-comfort">
+              <span class="vgt-amount">$10</span>
+            </button>
+            <button class="vgt-ornament" data-id="fresh-start-kit">
+              <span class="vgt-amount">$25</span>
+            </button>
+            <button class="vgt-ornament" data-id="hot-meal-hope">
+              <span class="vgt-amount">$50</span>
+            </button>
+            <button class="vgt-ornament" data-id="bridge-stability">
+              <span class="vgt-amount">$100</span>
+            </button>
+            <button class="vgt-ornament" data-id="safe-housing">
+              <span class="vgt-amount">$250</span>
+            </button>
+            <button class="vgt-ornament vgt-ornament-heart" data-id="give-heart">
+              <span class="vgt-amount">♥</span>
+            </button>
+          </div>
+          <div class="vgt-tree-trunk"></div>
+        </div>
+      </section>
+
+      <section class="vgt-details-panel" aria-live="polite">
+        <h2 id="vgt-detail-title">Choose a tag to see your impact</h2>
+        <p id="vgt-detail-amount" class="vgt-detail-amount"></p>
+        <p id="vgt-detail-description" class="vgt-detail-description">
+          Tap an ornament on the tree to learn what your gift can provide – from warm socks and hygiene kits to hot meals and safe housing.
+        </p>
+        <button id="vgt-donate-button" class="vgt-donate-button">
+          Give this gift
+        </button>
+
+        <p class="vgt-small-note">
+          You’ll enter your final gift amount on our secure online donation page. Every dollar helps decorate the Virtual Giving Tree with real support for people in recovery.
+        </p>
+      </section>
+    </main>
+
+    <footer class="vgt-footer">
+      <p>Foundations to Freedom &middot; Virtual Giving Tree</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
