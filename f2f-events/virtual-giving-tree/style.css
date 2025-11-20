@@ -16,30 +16,48 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--vgt-bg);
   color: var(--vgt-text);
 }
 
-/* Page wrapper – make it easy to drop inside iframes/Divi */
+/* -------------------- PAGE + LAYOUT -------------------- */
+
 .vgt-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 16px;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden; /* hide snow overflow */
+  padding: 24px;
+  position: relative;   /* allows snow overlay */
+  z-index: 1;
+}
+
+/* Snowfall */
+.vgt-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(255,255,255,0.9) 0, rgba(255,255,255,0) 40%),
+    radial-gradient(circle at 80% -10%, rgba(255,255,255,0.9) 0, rgba(255,255,255,0) 40%),
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,0.8) 0, rgba(255,255,255,0) 40%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.8) 0, rgba(255,255,255,0) 40%);
+  background-repeat: repeat;
+  animation: vgt-snow 18s linear infinite;
+}
+
+@keyframes vgt-snow {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to   { background-position: 0 800px, 0 1000px, 0 900px, 0 1100px; }
 }
 
 .vgt-header {
   text-align: center;
   margin-bottom: 24px;
-  position: relative;
-  z-index: 2;
 }
 
 .vgt-header h1 {
@@ -60,102 +78,147 @@ body {
   max-width: 1100px;
   width: 100%;
   margin: 0 auto 24px;
-  position: relative;
-  z-index: 2;
 }
 
 .vgt-tree-panel,
 .vgt-details-panel {
   background: var(--vgt-card-bg);
   border-radius: 16px;
-  padding: 32px 24px 28px;
+  padding: 24px;
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
 }
 
-/* Center the tree and allow the star/ornaments to “spill” safely */
-.vgt-tree-panel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
+.vgt-footer {
+  text-align: center;
+  margin-top: auto;
+  font-size: 0.85rem;
+  color: var(--vgt-muted);
 }
 
-/* Tree */
+/* -------------------- TREE -------------------- */
 
 .vgt-tree {
   position: relative;
   width: 100%;
-  max-width: 360px;
+  max-width: 420px;
   margin: 0 auto;
   aspect-ratio: 3 / 4;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  overflow: visible;              /* let glow / star / shadows show */
-  transform: scale(0.9);          /* shrink slightly so nothing clips */
-  transform-origin: center bottom;
 }
-
-/* Star at the top */
-
-.vgt-tree-star {
-  position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translate(-50%, -115%);
-  font-size: 40px;
-  color: #ffd86b;
-  text-shadow:
-    0 0 8px rgba(0,0,0,0.25),
-    0 0 14px rgba(255,216,107,0.8);
-}
-
-/* Leafy part of the spruce */
 
 .vgt-tree-leaves {
   position: relative;
-  width: 76%;
-  height: 70%;
+  width: 80%;
+  height: 72%;
   margin-bottom: 14px;
-  background:
-    radial-gradient(circle at 20% 0%, #41e6a1, transparent 60%),
-    radial-gradient(circle at 80% 0%, #2dc28a, transparent 55%),
-    linear-gradient(to bottom, #0e8b57, #0a5a3b);
-  border-radius: 52% 52% 40% 40%;
-  box-shadow:
-    inset 0 0 24px rgba(0, 0, 0, 0.18),
-    0 18px 30px rgba(15, 23, 42, 0.30);
+  background: linear-gradient(180deg, #17d998, #00754b);
+
+  /* spruce-tree polygon */
+  clip-path: polygon(
+    50% 0%,
+    70% 10%, 60% 10%,
+    80% 24%, 65% 24%,
+    86% 40%, 64% 40%,
+    94% 65%, 50% 100%,
+    6% 65%, 36% 40%,
+    14% 40%, 35% 24%,
+    20% 24%, 40% 10%, 30% 10%
+  );
+
+  box-shadow: 0 24px 40px rgba(15, 23, 42, 0.3);
 }
-
-/* Simple “garland” bands */
-
-.vgt-tree-leaves::before,
-.vgt-tree-leaves::after {
-  content: "";
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #ffd88a, #ffeab8, #ffd88a);
-  opacity: 0.35;
-}
-
-.vgt-tree-leaves::before { top: 32%; }
-.vgt-tree-leaves::after  { top: 58%; }
 
 /* Trunk */
-
 .vgt-tree-trunk {
   width: 20%;
-  height: 14%;
+  height: 16%;
   background: #7b4e27;
   border-radius: 6px;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
 }
 
-/* Ornaments */
+/* Star on top */
+.vgt-tree-star {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+  background: #ffd54a;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  box-shadow: 0 0 12px rgba(255, 213, 74, 0.9);
+  animation: vgt-star-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes vgt-star-pulse {
+  from {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 6px rgba(255,213,74,0.6);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 18px rgba(255,213,74,1);
+  }
+}
+
+/* -------------------- LIGHT STRANDS -------------------- */
+
+.vgt-light-strand {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  height: 18px;
+  border-radius: 999px;
+  border-top: 2px solid rgba(255,255,255,0.5);
+  z-index: 1;
+}
+
+.vgt-light-strand--top    { top: 28%; }
+.vgt-light-strand--mid    { top: 45%; }
+.vgt-light-strand--bottom { top: 62%; }
+
+.vgt-light-strand::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 6%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffd88a;
+
+  /* multiple bulbs */
+  box-shadow:
+    40px 0 0 #ffd88a,
+    80px 0 0 #ffd88a,
+    120px 0 0 #ffd88a,
+    160px 0 0 #ffd88a,
+    200px 0 0 #ffd88a;
+
+  animation: vgt-twinkle 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes vgt-twinkle {
+  from { opacity: 0.5; filter: brightness(0.9); }
+  to   { opacity: 1;   filter: brightness(1.3); }
+}
+
+/* -------------------- ORNAMENTS -------------------- */
 
 .vgt-ornament {
   position: absolute;
@@ -164,29 +227,18 @@ body {
   border-radius: 50%;
   border: 3px solid #ffffff;
   background: #ff6b6b;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 0;
-  appearance: none;
-  outline: none;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
-}
-
-.vgt-ornament .vgt-amount {
-  font-weight: 700;
-  color: #ffffff;
-  font-size: 0.95rem;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  z-index: 2;
 }
 
 .vgt-ornament:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.3);
 }
 
 .vgt-ornament.vgt-active {
@@ -198,51 +250,21 @@ body {
   background: #f97316;
 }
 
-/* Positions — pulled in slightly so nothing gets clipped */
-
-.vgt-ornament[data-id="warm-wishes"] {
-  top: 22%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.vgt-ornament .vgt-amount {
+  font-weight: 700;
+  color: #fff;
 }
 
-.vgt-ornament[data-id="cozy-comfort"] {
-  top: 34%;
-  left: 30%;
-  transform: translate(-50%, -50%);
-}
+/* Ornament positions */
+.vgt-ornament[data-id="warm-wishes"]  { top: 22%; left: 50%; transform: translate(-50%, -50%); }
+.vgt-ornament[data-id="cozy-comfort"] { top: 33%; left: 30%; transform: translate(-50%, -50%); }
+.vgt-ornament[data-id="fresh-start-kit"] { top: 34%; left: 70%; transform: translate(-50%, -50%); }
+.vgt-ornament[data-id="hot-meal-hope"] { top: 48%; left: 34%; transform: translate(-50%, -50%); }
+.vgt-ornament[data-id="bridge-stability"] { top: 49%; left: 66%; transform: translate(-50%, -50%); }
+.vgt-ornament[data-id="safe-housing"] { top: 63%; left: 50%; transform: translate(-50%, -50%); }
+.vgt-ornament[data-id="give-heart"] { top: 16%; left: 24%; transform: translate(-50%, -50%); }
 
-.vgt-ornament[data-id="fresh-start-kit"] {
-  top: 34%;
-  left: 70%;
-  transform: translate(-50%, -50%);
-}
-
-.vgt-ornament[data-id="hot-meal-hope"] {
-  top: 52%;
-  left: 32%;
-  transform: translate(-50%, -50%);
-}
-
-.vgt-ornament[data-id="bridge-stability"] {
-  top: 52%;
-  left: 68%;
-  transform: translate(-50%, -50%);
-}
-
-.vgt-ornament[data-id="safe-housing"] {
-  top: 68%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.vgt-ornament[data-id="give-heart"] {
-  top: 18%;
-  left: 25%;
-  transform: translate(-50%, -50%);
-}
-
-/* Details panel */
+/* -------------------- DETAILS PANEL -------------------- */
 
 .vgt-details-panel h2 {
   margin-top: 0;
@@ -260,7 +282,6 @@ body {
 .vgt-detail-description {
   margin-top: 0;
   margin-bottom: 16px;
-  color: var(--vgt-text);
 }
 
 .vgt-donate-button {
@@ -276,7 +297,7 @@ body {
   font-size: 0.98rem;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.25);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition: transform .15s ease, box-shadow .15s ease;
 }
 
 .vgt-donate-button:hover {
@@ -291,62 +312,7 @@ body {
   color: var(--vgt-muted);
 }
 
-/* Footer */
-
-.vgt-footer {
-  text-align: center;
-  margin-top: auto;
-  font-size: 0.85rem;
-  color: var(--vgt-muted);
-  position: relative;
-  z-index: 2;
-}
-
-/* Snowfall */
-
-.vgt-snow-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.vgt-snowflake {
-  position: absolute;
-  top: -10px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
-  animation-name: vgt-snowfall;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-/* Keyframes */
-
-@keyframes vgt-twinkle {
-  0% {
-    opacity: 0.5;
-    filter: brightness(0.8);
-  }
-  100% {
-    opacity: 1;
-    filter: brightness(1.2);
-  }
-}
-
-@keyframes vgt-snowfall {
-  0% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(110vh);
-  }
-}
-
-/* Responsive */
+/* -------------------- RESPONSIVE -------------------- */
 
 @media (max-width: 900px) {
   .vgt-main {
