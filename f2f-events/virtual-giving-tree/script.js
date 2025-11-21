@@ -107,15 +107,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   ornaments.forEach((orn) => {
-    orn.addEventListener("click", () => {
-      setActiveTier(orn.dataset.id);
+const sound = document.getElementById("ornamentSound");
 
-      // Play chime sound on click (if file exists / allowed)
-      if (chimeAudio) {
-        try {
-          chimeAudio.currentTime = 0;
-          chimeAudio.play().catch(() => {});
-        } catch (err) {
+ornaments.forEach((orn) => {
+  orn.addEventListener("click", () => {
+    setActiveTier(orn.dataset.id);
+
+    // Play chime
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+    }
           // ignore if autoplay is blocked
         }
       }
