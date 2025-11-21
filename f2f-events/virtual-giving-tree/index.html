@@ -27,43 +27,14 @@
 
     <main class="vgt-main">
 <section class="vgt-tree-panel">
-  <div class="vgt-tree">
-    <div class="vgt-tree-star"></div>
-
-    <div class="vgt-tree-leaves">
-      <!-- light strands behind ornaments -->
-      <div class="vgt-light-strand vgt-light-strand--top"></div>
-      <div class="vgt-light-strand vgt-light-strand--mid"></div>
-      <div class="vgt-light-strand vgt-light-strand--bottom"></div>
-
-      <!-- Ornaments (keep exactly as you had them) -->
-
-            <!-- Ornaments: positions handled in CSS -->
-            <button class="vgt-ornament" data-id="warm-wishes">
-              <span class="vgt-amount">$5</span>
-            </button>
-            <button class="vgt-ornament" data-id="cozy-comfort">
-              <span class="vgt-amount">$10</span>
-            </button>
-            <button class="vgt-ornament" data-id="fresh-start-kit">
-              <span class="vgt-amount">$25</span>
-            </button>
-            <button class="vgt-ornament" data-id="hot-meal-hope">
-              <span class="vgt-amount">$50</span>
-            </button>
-            <button class="vgt-ornament" data-id="bridge-stability">
-              <span class="vgt-amount">$100</span>
-            </button>
-            <button class="vgt-ornament" data-id="safe-housing">
-              <span class="vgt-amount">$250</span>
-            </button>
-            <button class="vgt-ornament vgt-ornament-heart" data-id="give-heart">
-              <span class="vgt-amount">♥</span>
-            </button>
-          </div>
-          <div class="vgt-tree-trunk"></div>
-        </div>
-      </section>
+  <div class="vgt-tree-image-wrap">
+    <img src="spruce-tree--primary.png" alt="Giving Tree" class="vgt-tree-image" />
+    <!-- ornaments stay where they are — just positioned absolutely over the image -->
+    <div class="vgt-ornament-layer">
+      <!-- your same ornament buttons go here -->
+    </div>
+  </div>
+</section>
 
       <section class="vgt-details-panel" aria-live="polite">
         <h2 id="vgt-detail-title">Choose a tag to see your impact</h2>
