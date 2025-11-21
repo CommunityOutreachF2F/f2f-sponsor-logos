@@ -100,10 +100,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
 async function loadManifest() {
   const cacheBust = '?ts=' + Date.now();
-  const url = '../f2f-sponsor-logos/manifest.json' + cacheBust;
+
+  // Absolute URL so we never have to worry about relative paths
+  const url = 'https://communityoutreachf2f.github.io/f2f-digital-hub/f2f-sponsor-logos/manifest.json' + cacheBust;
+
   console.log('Fetching manifest from:', url);
   const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) throw new Error('manifest.json not found');
+
+  if (!res.ok) {
+    throw new Error('manifest.json not found, status = ' + res.status);
+  }
+
   const data = await res.json();
   console.log('Loaded', Array.isArray(data.logos) ? data.logos.length : 0, 'logo rows.');
   return data;
