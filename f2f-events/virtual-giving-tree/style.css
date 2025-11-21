@@ -1,15 +1,12 @@
 :root {
   --vgt-blue: #0054b8;
   --vgt-green: #1c7c4d;
-  --vgt-bg-top: #eef5ff;
-  --vgt-bg-bottom: #dde8ff;
+  --vgt-bg: #e9f2ff;
   --vgt-card-bg: #ffffff;
   --vgt-text: #1e2733;
   --vgt-muted: #5c6674;
 }
 
-/* Reset / base
-----------------------------------------*/
 *,
 *::before,
 *::after {
@@ -20,70 +17,94 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  background: linear-gradient(to bottom, var(--vgt-bg-top), var(--vgt-bg-bottom));
+  background: radial-gradient(circle at top, #f8fbff 0, #e4edff 60%, #dae5ff 100%);
   color: var(--vgt-text);
 }
 
-/* Page + snow
-----------------------------------------*/
+/* Root wrapper */
 .vgt-page {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 24px;
-  position: relative;
   overflow: hidden;
 }
 
+/* Snow overlay (fixed across page) */
 .vgt-snow-layer {
+  pointer-events: none;
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
-  /* two snow layers at different scales */
+  opacity: 0.5;
   background-image:
-    radial-gradient(#ffffff 0, #ffffff 2px, transparent 3px),
-    radial-gradient(#ffffff 0, #ffffff 2px, transparent 3px);
-  background-size: 140px 140px, 200px 200px;
-  background-position: 0 0, 60px -40px;
-  opacity: 0.55;
-  mix-blend-mode: soft-light;
-  animation: vgtSnow 18s linear infinite;
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0) 40px),
+    radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.8) 0, rgba(255, 255, 255, 0) 50px),
+    radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0) 40px),
+    radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.8) 0, rgba(255, 255, 255, 0) 45px);
+  background-size: 300px 300px, 320px 320px, 260px 260px, 280px 280px;
+  animation: vgtSnowDrift 22s linear infinite;
 }
 
-@keyframes vgtSnow {
+@keyframes vgtSnowDrift {
   from {
-    background-position: 0 0, 60px -40px;
+    background-position:
+      0px 0px,
+      50px -60px,
+      -40px 40px,
+      80px -20px;
   }
   to {
-    background-position: 0 480px, 60px 440px;
+    background-position:
+      0px 800px,
+      50px 740px,
+      -40px 840px,
+      80px 780px;
   }
 }
 
-/* Layout
-----------------------------------------*/
+/* Optional header if you ever show it again */
+.vgt-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.vgt-header h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  color: var(--vgt-blue);
+}
+
+.vgt-header p {
+  margin: 0;
+  color: var(--vgt-muted);
+}
+
+/* Main layout */
 .vgt-main {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 24px;
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto 24px;
   position: relative;
   z-index: 1; /* above snow */
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1150px;
+  width: 100%;
+  margin: 0 auto 24px;
 }
 
-.vgt-tree-panel,
-.vgt-details-panel {
-  background: var(--vgt-card-bg);
-  border-radius: 20px;
+/* Tree panel with winter background */
+.vgt-tree-panel {
+  background: url("background.png") center bottom / cover no-repeat;
+  border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+  position: relative;
+  overflow: visible;
 }
 
-/* Tree + ornaments
-----------------------------------------*/
+/* Tree image + ornaments wrapper */
 .vgt-tree-image-wrap {
   position: relative;
   max-width: 420px;
@@ -96,106 +117,127 @@ body {
   height: auto;
 }
 
+/* Layer that holds ornament buttons */
 .vgt-ornament-layer {
   position: absolute;
   inset: 0;
+  pointer-events: none; /* only buttons receive clicks */
 }
 
-/* base ornament button – no white circle */
+/* Ornaments */
 .vgt-ornament {
   position: absolute;
-  width: 76px;
-  height: 76px;
-  padding: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
   border: none;
-  border-radius: 0;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  padding: 0;
+  appearance: none;
   outline: none;
-  transform: translate(-50%, -50%);
-  transition: transform 0.15s ease, filter 0.15s ease;
+  pointer-events: auto;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.vgt-ornament .vgt-amount {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 0.95rem;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.45);
 }
 
 .vgt-ornament:hover {
-  transform: translate(-50%, -50%) scale(1.06);
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.28));
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+  filter: brightness(1.05);
 }
 
-/* PNGs for each ornament */
+.vgt-ornament.vgt-active {
+  filter: brightness(1.15);
+}
+
+/* Map each tier to a specific ornament PNG + position on tree */
+
 .vgt-ornament[data-id="warm-wishes"] {
+  /* $5 – gold ornament, near top center */
   background-image: url("ornament-gold--primary.png");
+  top: 20%;
+  left: 52%;
+  transform: translate(-50%, -50%);
 }
 
 .vgt-ornament[data-id="cozy-comfort"] {
+  /* $10 – blue ornament, upper left */
   background-image: url("ornament-blue--primary.png");
+  top: 33%;
+  left: 34%;
+  transform: translate(-50%, -50%);
 }
 
 .vgt-ornament[data-id="fresh-start-kit"] {
+  /* $25 – orange ornament, upper right */
   background-image: url("ornament-orange--primary.png");
+  top: 33%;
+  left: 68%;
+  transform: translate(-50%, -50%);
 }
 
 .vgt-ornament[data-id="hot-meal-hope"] {
+  /* $50 – red ornament, mid left */
   background-image: url("ornament-red--primary.png");
+  top: 48%;
+  left: 36%;
+  transform: translate(-50%, -50%);
 }
 
 .vgt-ornament[data-id="bridge-stability"] {
+  /* $100 – green ornament, mid right */
   background-image: url("ornament-green--primary.png");
+  top: 48%;
+  left: 66%;
+  transform: translate(-50%, -50%);
 }
 
 .vgt-ornament[data-id="safe-housing"] {
+  /* $250 – purple ornament, lower center */
   background-image: url("ornament-purple--primary.png");
+  top: 63%;
+  left: 51%;
+  transform: translate(-50%, -50%);
 }
 
 .vgt-ornament[data-id="give-heart"] {
+  /* Heart / custom – pink ornament, near upper left */
   background-image: url("ornament-pink--primary.png");
+  top: 18%;
+  left: 32%;
+  transform: translate(-50%, -50%);
 }
 
-/* Positions tuned for the spruce-tree PNG */
-.vgt-ornament[data-id="warm-wishes"] {
-  top: 23%;
-  left: 50%;
+/* Details panel */
+
+.vgt-details-panel {
+  background: var(--vgt-card-bg);
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-.vgt-ornament[data-id="cozy-comfort"] {
-  top: 38%;
-  left: 30%;
-}
-
-.vgt-ornament[data-id="fresh-start-kit"] {
-  top: 38%;
-  left: 70%;
-}
-
-.vgt-ornament[data-id="hot-meal-hope"] {
-  top: 53%;
-  left: 35%;
-}
-
-.vgt-ornament[data-id="bridge-stability"] {
-  top: 53%;
-  left: 65%;
-}
-
-.vgt-ornament[data-id="safe-housing"] {
-  top: 66%;
-  left: 50%;
-}
-
-/* moved the pink “♥” ornament onto the upper-right of the tree */
-.vgt-ornament[data-id="give-heart"] {
-  top: 17%;
-  left: 72%;
-}
-
-/* Details panel
-----------------------------------------*/
 .vgt-details-panel h2 {
   margin-top: 0;
   margin-bottom: 8px;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   color: var(--vgt-blue);
 }
 
@@ -211,6 +253,8 @@ body {
   color: var(--vgt-text);
 }
 
+/* Donate button */
+
 .vgt-donate-button {
   display: inline-flex;
   align-items: center;
@@ -224,8 +268,7 @@ body {
   font-size: 0.98rem;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.25);
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .vgt-donate-button:hover {
@@ -241,17 +284,18 @@ body {
 }
 
 /* Footer */
+
 .vgt-footer {
+  position: relative;
+  z-index: 1;
   text-align: center;
   margin-top: auto;
   font-size: 0.85rem;
   color: var(--vgt-muted);
-  position: relative;
-  z-index: 1;
 }
 
-/* Responsive
-----------------------------------------*/
+/* Responsive */
+
 @media (max-width: 900px) {
   .vgt-main {
     grid-template-columns: 1fr;
@@ -265,6 +309,6 @@ body {
   }
 
   .vgt-tree-panel {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 }
