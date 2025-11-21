@@ -1,7 +1,8 @@
-// Set this to your actual donation link
-const DONATION_URL = "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
+// Donation target (your real PayPal link)
+const DONATION_URL =
+  "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
 
-// Tier definitions (text only – amounts & descriptions)
+// Tier definitions
 const tiers = [
   {
     id: "warm-wishes",
@@ -60,20 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const amountEl = document.getElementById("vgt-detail-amount");
   const descEl = document.getElementById("vgt-detail-description");
   const donateBtn = document.getElementById("vgt-donate-button");
-  const soundEl = document.getElementById("ornamentSound");
+  const ornamentSound = document.getElementById("ornamentSound");
 
   let activeTier = null;
 
-  // --- Default panel text (shown on first load) ---
-  // This matches what you described: “Tap an ornament…”
-  function setDefaultPanel() {
-    titleEl.textContent = "Choose a tag to see your impact";
-    amountEl.textContent = "";
-    descEl.textContent =
-      "Tap an ornament on the tree to learn what your gift can provide – from warm socks and hygiene kits to hot meals and safe housing.";
+  function playChime() {
+    if (!ornamentSound) return;
+    try {
+      ornamentSound.currentTime = 0;
+      ornamentSound.play();
+    } catch (e) {
+      // ignore autoplay blocks
+      console.warn("Chime blocked:", e.message);
+    }
   }
-
-  setDefaultPanel(); // keep intro text until the first click
 
   function setActiveTier(tierId) {
     const tier = tiers.find((t) => t.id === tierId);
@@ -81,12 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeTier = tier;
 
-    // Toggle “active” class for glow effect
     ornaments.forEach((orn) =>
       orn.classList.toggle("vgt-active", orn.dataset.id === tierId)
     );
 
-    // Update text panel
     titleEl.textContent = tier.title;
     amountEl.textContent =
       tier.amountLabel === "♥"
@@ -94,46 +93,40 @@ document.addEventListener("DOMContentLoaded", () => {
         : `Suggested gift: ${tier.amountLabel}`;
     descEl.textContent = tier.description;
 
-    // Play chime (ignore errors if user hasn’t interacted yet on some browsers)
-    if (soundEl) {
-      try {
-        soundEl.currentTime = 0;
-        soundEl.play().catch(() => {});
-      } catch (e) {
-        console.warn("Sound play blocked:", e);
-      }
-    }
+    playChime();
 
-    // GA4 tracking (safe-guard if gtag isn't present)
+    // GA4 event (safe even if gtag doesn't exist)
     if (typeof gtag === "function") {
-      gtag("event", "vgt_select_tier", {
-        event_category: "virtual_giving_tree",
-        event_label: tierId,
-        value: tier.amountLabel === "♥" ? 0 : parseFloat(tier.amountLabel.replace("$", "")) || 0,
+      gtag("event", "select_content", {
+        content_type: "virtual_giving_tree_tier",
+        item_id: tier.id,
+        value: tier.amountLabel,
       });
     }
   }
 
-  // Click handlers for ornaments
   ornaments.forEach((orn) => {
     orn.addEventListener("click", () => {
       setActiveTier(orn.dataset.id);
     });
   });
 
-  // Donate button – always goes to main donation URL
   donateBtn.addEventListener("click", () => {
     if (typeof gtag === "function") {
-      gtag("event", "vgt_click_donate", {
-        event_category: "virtual_giving_tree",
-        event_label: activeTier ? activeTier.id : "no_tier_selected",
+      gtag("event", "virtual_giving_tree_donate_click", {
+        method: "PayPal",
+        tier_id: activeTier?.id || null,
       });
     }
+
     if (DONATION_URL) {
       window.open(DONATION_URL, "_blank");
     }
   });
 
-  // NOTE: we are intentionally *not* auto-calling setActiveTier(...)
-  // so the panel starts with the intro instructions instead of $5.
+  // INITIAL STATE: neutral intro message (no tier selected)
+  titleEl.textContent = "Choose a tag to see your impact";
+  amountEl.textContent = "";
+  descEl.textContent =
+    "Tap an ornament on the tree to learn what your gift can provide – from warm socks and hygiene kits to hot meals and safe housing.";
 });
