@@ -264,13 +264,47 @@ body {
 }
 
 /* Ornament positions */
-.vgt-ornament[data-id="warm-wishes"]  { top: 22%; left: 50%; transform: translate(-50%, -50%); }
-.vgt-ornament[data-id="cozy-comfort"] { top: 33%; left: 30%; transform: translate(-50%, -50%); }
-.vgt-ornament[data-id="fresh-start-kit"] { top: 34%; left: 70%; transform: translate(-50%, -50%); }
-.vgt-ornament[data-id="hot-meal-hope"] { top: 48%; left: 34%; transform: translate(-50%, -50%); }
-.vgt-ornament[data-id="bridge-stability"] { top: 49%; left: 66%; transform: translate(-50%, -50%); }
-.vgt-ornament[data-id="safe-housing"] { top: 63%; left: 50%; transform: translate(-50%, -50%); }
-.vgt-ornament[data-id="give-heart"] { top: 16%; left: 24%; transform: translate(-50%, -50%); }
+.vgt-ornament[data-id="warm-wishes"] {
+  top: 22%;  /* was 18% */
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="cozy-comfort"] {
+  top: 34%;  /* was 32% */
+  left: 30%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="fresh-start-kit"] {
+  top: 36%;  /* was 34% */
+  left: 70%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="hot-meal-hope"] {
+  top: 52%;   /* this one may already be okay */
+  left: 35%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="bridge-stability"] {
+  top: 56%;   /* tiny nudge down */
+  left: 65%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="safe-housing"] {
+  top: 70%;   /* tiny nudge down */
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vgt-ornament[data-id="give-heart"] {
+  top: 18%;   /* was 12% – brings it away from the edge */
+  left: 25%;
+  transform: translate(-50%, -50%);
+}
 
 /* -------------------- DETAILS PANEL -------------------- */
 
