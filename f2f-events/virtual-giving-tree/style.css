@@ -8,6 +8,18 @@
   --vgt-accent: #ffd88a;
 }
 
+/* ---------------------------------- */
+/* OPTIONAL: Used for embedded widget */
+/* ---------------------------------- */
+
+.vgt-header {
+  display: none !important;
+}
+
+.vgt-page {
+  padding-top: 0 !important;
+}
+
 *,
 *::before,
 *::after {
