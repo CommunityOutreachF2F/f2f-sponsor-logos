@@ -80,7 +80,15 @@ body {
   margin: 0 auto 24px;
 }
 
-.vgt-tree-panel,
+/* Make the left card taller and allow stuff to spill outside a bit */
+.vgt-tree-panel {
+  background: var(--vgt-card-bg);
+  border-radius: 16px;
+  padding: 32px 24px 32px; /* extra top/bottom padding */
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+  overflow: visible; /* important: don't clip ornaments/star */
+}
+
 .vgt-details-panel {
   background: var(--vgt-card-bg);
   border-radius: 16px;
@@ -96,11 +104,11 @@ body {
 }
 
 /* -------------------- TREE -------------------- */
-
+/* Keep the whole tree a bit smaller so it fits nicely */
 .vgt-tree {
   position: relative;
   width: 100%;
-  max-width: 420px;
+  max-width: 320px;   /* was bigger – this keeps it inside the card */
   margin: 0 auto;
   aspect-ratio: 3 / 4;
   display: flex;
