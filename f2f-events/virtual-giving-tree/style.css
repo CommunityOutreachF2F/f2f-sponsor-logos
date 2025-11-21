@@ -104,85 +104,15 @@ body {
 }
 
 /* -------------------- TREE -------------------- */
-/* Keep the whole tree a bit smaller so it fits nicely */
-.vgt-tree {
-  position: relative;
-  width: 100%;
-  max-width: 320px;   /* was bigger – this keeps it inside the card */
-  margin: 0 auto;
-  aspect-ratio: 3 / 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.vgt-tree-leaves {
-  position: relative;
-  width: 80%;
-  height: 72%;
-  margin-bottom: 14px;
-  background: linear-gradient(180deg, #17d998, #00754b);
-
-  /* spruce-tree polygon */
-  clip-path: polygon(
-    50% 0%,
-    70% 10%, 60% 10%,
-    80% 24%, 65% 24%,
-    86% 40%, 64% 40%,
-    94% 65%, 50% 100%,
-    6% 65%, 36% 40%,
-    14% 40%, 35% 24%,
-    20% 24%, 40% 10%, 30% 10%
-  );
-
-  box-shadow: 0 24px 40px rgba(15, 23, 42, 0.3);
-}
-
-/* Trunk */
-.vgt-tree-trunk {
-  width: 20%;
-  height: 16%;
-  background: #7b4e27;
-  border-radius: 6px;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-}
-
-/* Star on top */
-.vgt-tree-star {
-  position: absolute;
-  top: 6%;
-  left: 50%;
-  width: 42px;
-  height: 42px;
-  transform: translate(-50%, -50%);
-  background: #ffd54a;
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-  box-shadow: 0 0 12px rgba(255, 213, 74, 0.9);
-  animation: vgt-star-pulse 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes vgt-star-pulse {
-  from {
-    transform: translate(-50%, -50%) scale(1);
-    box-shadow: 0 0 6px rgba(255,213,74,0.6);
-  }
-  to {
-    transform: translate(-50%, -50%) scale(1.1);
-    box-shadow: 0 0 18px rgba(255,213,74,1);
-  }
-}
+<section class="vgt-tree-panel">
+  <div class="vgt-tree-image-wrap">
+    <img src="spruce-tree--primary.png" alt="Giving Tree" class="vgt-tree-image" />
+    <!-- ornaments stay where they are — just positioned absolutely over the image -->
+    <div class="vgt-ornament-layer">
+      <!-- your same ornament buttons go here -->
+    </div>
+  </div>
+</section>
 
 /* -------------------- LIGHT STRANDS -------------------- */
 
