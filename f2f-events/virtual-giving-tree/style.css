@@ -177,7 +177,36 @@ body {
   font-size: 0.95rem;
   text-shadow: 0 2px 4px rgba(0,0,0,0.45);
 }
+/* Map each giving tier to a specific ornament PNG */
 
+.vgt-ornament[data-id="warm-wishes"] {
+  background-image: url("ornament-red--primary.png");
+}
+
+.vgt-ornament[data-id="cozy-comfort"] {
+  background-image: url("ornament-orange--primary.png");
+}
+
+.vgt-ornament[data-id="fresh-start-kit"] {
+  background-image: url("ornament-green--primary.png");
+}
+
+.vgt-ornament[data-id="hot-meal-hope"] {
+  background-image: url("ornament-blue--primary.png");
+}
+
+.vgt-ornament[data-id="bridge-stability"] {
+  background-image: url("ornament-purple--primary.png");
+}
+
+.vgt-ornament[data-id="safe-housing"] {
+  background-image: url("ornament-gold--primary.png");
+}
+
+/* Heart / custom amount */
+.vgt-ornament[data-id="give-heart"] {
+  background-image: url("ornament-pink--primary.png");
+}
 /* -------------------- LIGHT STRANDS -------------------- */
 
 .vgt-light-strand {
