@@ -1,13 +1,14 @@
 :root {
   --vgt-blue: #0054b8;
   --vgt-green: #1c7c4d;
-  --vgt-bg: #f6f8fb;
+  --vgt-bg: #eef3fb;
   --vgt-card-bg: #ffffff;
   --vgt-text: #1e2733;
   --vgt-muted: #5c6674;
+  --vgt-accent: #ffd37c;
 }
 
-/* Reset & base */
+/* RESET & BASE */
 
 *,
 *::before,
@@ -19,9 +20,11 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  background: var(--vgt-bg);
+  background: radial-gradient(circle at top, #fdfdfd 0, #dde6f5 55%, #d4e1f8 100%);
   color: var(--vgt-text);
 }
+
+/* PAGE LAYOUT */
 
 .vgt-page {
   min-height: 100vh;
@@ -29,87 +32,79 @@ body {
   flex-direction: column;
   align-items: stretch;
   padding: 24px;
-  position: relative;
-  overflow: hidden;
 }
 
-/* Snow layer */
+/* Snow overlay (pure CSS) */
 
 .vgt-snow-layer {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-}
-
-.vgt-snow-layer::before {
-  content: "";
-  position: absolute;
-  inset: -50%;
-  background-image: radial-gradient(#ffffff 1px, transparent 0);
-  background-size: 18px 18px;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.7) 1.2px, transparent 1.2px);
+  background-size: 120px 180px, 180px 260px;
+  background-position: 0 0, 60px 40px;
   opacity: 0.55;
-  animation: vgt-snow 22s linear infinite;
+  animation: vgt-snow 30s linear infinite;
+  z-index: 0;
 }
 
 @keyframes vgt-snow {
-  from {
-    transform: translate3d(0, -20%, 0);
+  0% {
+    background-position: 0 0, 60px 40px;
   }
-  to {
-    transform: translate3d(0, 20%, 0);
+  100% {
+    background-position: 0 600px, 60px 640px;
   }
 }
 
-/* Layout */
+/* MAIN GRID */
 
 .vgt-main {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 24px;
   max-width: 1100px;
   width: 100%;
   margin: 0 auto 24px;
-  position: relative;
-  z-index: 2; /* above snow */
 }
 
 .vgt-tree-panel,
 .vgt-details-panel {
   background: var(--vgt-card-bg);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
 }
 
-/* Tree image + ornaments */
-
-.vgt-tree-panel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: visible;
-}
+/* TREE: IMAGE + ORNAMENT LAYER */
 
 .vgt-tree-image-wrap {
   position: relative;
   max-width: 420px;
-  width: 100%;
+  margin: 0 auto;
 }
 
 .vgt-tree-image {
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
+  position: relative;
+  z-index: 1;
 }
 
+/* Layer that holds all ornaments */
 .vgt-ornament-layer {
   position: absolute;
-  inset: 5% 15% 10% 15%; /* keeps ornaments inside tree area */
-  pointer-events: none;   /* let buttons opt-in to events */
+  inset: 0;
+  z-index: 2;
+  pointer-events: none; /* let buttons themselves handle clicks */
 }
 
-/* Base ornament button */
+/* Ornaments (buttons) */
 
 .vgt-ornament {
   position: absolute;
@@ -118,111 +113,109 @@ body {
   border-radius: 50%;
   border: none;
   padding: 0;
-  cursor: pointer;
-  pointer-events: auto;
-  background-color: transparent;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.35);
   transform: translate(-50%, -50%);
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  pointer-events: auto;
 }
 
-/* If the PNGs aren’t found, this fallback keeps them visible */
 .vgt-ornament .vgt-amount {
   font-weight: 700;
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  text-shadow:
+    0 0 4px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(0, 0, 0, 0.7);
 }
 
-/* Hover + active */
-
 .vgt-ornament:hover {
-  transform: translate(-50%, -52%) scale(1.04);
-  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.32);
+  transform: translate(-50%, -52%);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.5);
 }
 
 .vgt-ornament.vgt-active {
-  transform: translate(-50%, -54%) scale(1.08);
+  filter: brightness(1.05) saturate(1.15);
 }
 
-/* Ornaments PNG mapping – make sure file names match exactly */
-
-.vgt-ornament[data-color="gold"] {
-  background-image: url("ornament-gold--primary.png");
-}
-
-.vgt-ornament[data-color="red"] {
-  background-image: url("ornament-red--primary.png");
-}
-
-.vgt-ornament[data-color="green"] {
-  background-image: url("ornament-green--primary.png");
-}
-
-.vgt-ornament[data-color="blue"] {
-  background-image: url("ornament-blue--primary.png");
-}
-
-.vgt-ornament[data-color="teal"] {
-  background-image: url("ornament-teal--primary.png");
-}
-
-.vgt-ornament[data-color="purple"] {
-  background-image: url("ornament-purple--primary.png");
-}
-
-.vgt-ornament[data-color="white"] {
-  background-image: url("ornament-white--primary.png");
-}
-
-/* Ornament positions (tweak later if needed) */
-
+/* Per-tier positions, relative to the tree graphic */
 .vgt-ornament[data-id="warm-wishes"] {
-  top: 23%;
-  left: 46%;
+  top: 22%;
+  left: 55%;
 }
 
 .vgt-ornament[data-id="cozy-comfort"] {
-  top: 33%;
-  left: 30%;
+  top: 32%;
+  left: 35%;
 }
 
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 33%;
-  left: 63%;
+  top: 38%;
+  left: 67%;
 }
 
 .vgt-ornament[data-id="hot-meal-hope"] {
-  top: 48%;
-  left: 32%;
+  top: 49%;
+  left: 38%;
 }
 
 .vgt-ornament[data-id="bridge-stability"] {
-  top: 48%;
-  left: 60%;
+  top: 52%;
+  left: 63%;
 }
 
 .vgt-ornament[data-id="safe-housing"] {
-  top: 63%;
-  left: 46%;
+  top: 64%;
+  left: 52%;
 }
 
 .vgt-ornament[data-id="give-heart"] {
-  top: 18%;
-  left: 60%;
+  top: 27%;
+  left: 48%;
 }
 
-/* Details panel */
+/* Tie each ornament to its PNG */
+.vgt-ornament[data-id="warm-wishes"] {
+  background-image: url("ornament-gold--primary.png");
+}
+
+.vgt-ornament[data-id="cozy-comfort"] {
+  background-image: url("ornament-blue--primary.png");
+}
+
+.vgt-ornament[data-id="fresh-start-kit"] {
+  background-image: url("ornament-orange--primary.png");
+}
+
+.vgt-ornament[data-id="hot-meal-hope"] {
+  background-image: url("ornament-red--primary.png");
+}
+
+.vgt-ornament[data-id="bridge-stability"] {
+  background-image: url("ornament-green--primary.png");
+}
+
+.vgt-ornament[data-id="safe-housing"] {
+  background-image: url("ornament-purple--primary.png");
+}
+
+.vgt-ornament[data-id="give-heart"] {
+  background-image: url("ornament-pink--primary.png");
+}
+
+/* DETAILS PANEL */
 
 .vgt-details-panel h2 {
   margin-top: 0;
   margin-bottom: 8px;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: var(--vgt-blue);
 }
 
@@ -251,8 +244,7 @@ body {
   font-size: 0.98rem;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.25);
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .vgt-donate-button:hover {
@@ -267,18 +259,16 @@ body {
   color: var(--vgt-muted);
 }
 
-/* Footer */
+/* FOOTER */
 
 .vgt-footer {
   text-align: center;
   margin-top: auto;
   font-size: 0.85rem;
   color: var(--vgt-muted);
-  position: relative;
-  z-index: 2;
 }
 
-/* Responsive */
+/* RESPONSIVE */
 
 @media (max-width: 900px) {
   .vgt-main {
