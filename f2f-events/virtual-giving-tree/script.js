@@ -1,7 +1,8 @@
-// Main donation link – now set to your PayPal Giving Tree payment URL
+// Main donation URL (PayPal)
 const DONATION_URL =
   "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
 
+// Ornament tiers – text only, no layout here
 const tiers = [
   {
     id: "warm-wishes",
@@ -60,23 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const amountEl = document.getElementById("vgt-detail-amount");
   const descEl = document.getElementById("vgt-detail-description");
   const donateBtn = document.getElementById("vgt-donate-button");
-  const chimeAudio = document.getElementById("vgt-chime-audio");
-  const snowLayer = document.querySelector(".vgt-snow-layer");
+  const soundEl = document.getElementById("ornamentSound");
 
   let activeTier = null;
 
-  // --- Snowfall setup ---
-  if (snowLayer) {
-    const FLAKES = 60;
-    for (let i = 0; i < FLAKES; i++) {
-      const flake = document.createElement("span");
-      flake.className = "vgt-snowflake";
-      flake.style.left = Math.random() * 100 + "%";
-      flake.style.animationDelay = (Math.random() * 10).toFixed(2) + "s";
-      flake.style.animationDuration = (8 + Math.random() * 8).toFixed(2) + "s";
-      flake.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
-      snowLayer.appendChild(flake);
-    }
+  function playChime() {
+    if (!soundEl) return;
+    const clone = soundEl.cloneNode();
+    clone.play().catch(() => {
+      // ignore autoplay errors
+    });
   }
 
   function setActiveTier(tierId) {
@@ -85,9 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeTier = tier;
 
-    ornaments.forEach((orn) =>
-      orn.classList.toggle("vgt-active", orn.dataset.id === tierId)
-    );
+    ornaments.forEach((orn) => {
+      orn.classList.toggle("vgt-active", orn.dataset.id === tierId);
+    });
 
     titleEl.textContent = tier.title;
     amountEl.textContent =
@@ -96,49 +90,44 @@ document.addEventListener("DOMContentLoaded", () => {
         : `Suggested gift: ${tier.amountLabel}`;
     descEl.textContent = tier.description;
 
-    // GA4 event (safe even if gtag is not defined)
+    // GA4 tracking for ornament selection
     if (window.gtag) {
-      window.gtag("event", "select_virtual_tree_tier", {
+      window.gtag("event", "vgt_select_tier", {
+        event_category: "Virtual Giving Tree",
+        event_label: tier.title,
         tier_id: tier.id,
-        tier_title: tier.title,
-        amount_label: tier.amountLabel,
+        tier_amount: tier.amountLabel,
       });
     }
   }
 
   ornaments.forEach((orn) => {
-const sound = document.getElementById("ornamentSound");
+    orn.addEventListener("click", () => {
+      setActiveTier(orn.dataset.id);
+      playChime();
+    });
 
-ornaments.forEach((orn) => {
-  orn.addEventListener("click", () => {
-    setActiveTier(orn.dataset.id);
-
-    // Play chime
-    if (sound) {
-      sound.currentTime = 0;
-      sound.play().catch(() => {});
-    }
-          // ignore if autoplay is blocked
-        }
-      }
+    // small hover chime (optional, keep quiet)
+    orn.addEventListener("mouseenter", () => {
+      // playChime(); // uncomment if you actually want hover sound
     });
   });
 
   donateBtn.addEventListener("click", () => {
-    // GA4 event for donate button
     if (window.gtag) {
-      window.gtag("event", "click_virtual_tree_donate", {
+      window.gtag("event", "vgt_click_donate", {
+        event_category: "Virtual Giving Tree",
+        event_label: activeTier ? activeTier.title : "No tier selected",
         tier_id: activeTier ? activeTier.id : null,
-        tier_title: activeTier ? activeTier.title : null,
-        amount_label: activeTier ? activeTier.amountLabel : null,
+        tier_amount: activeTier ? activeTier.amountLabel : null,
       });
     }
 
     if (DONATION_URL) {
-      window.open(DONATION_URL, "_blank");
+      window.open(DONATION_URL, "_blank", "noopener");
     }
   });
 
-  // Optionally select a default ornament on load
-  // setActiveTier("warm-wishes");
+  // Default selection when page loads
+  setActiveTier("warm-wishes");
 });
