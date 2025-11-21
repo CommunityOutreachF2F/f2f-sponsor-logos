@@ -1,8 +1,7 @@
-// Main donation URL (PayPal)
-const DONATION_URL =
-  "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
+// Set this to your actual donation link
+const DONATION_URL = "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
 
-// Ornament tiers – text only, no layout here
+// Tier definitions (text only – amounts & descriptions)
 const tiers = [
   {
     id: "warm-wishes",
@@ -65,13 +64,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let activeTier = null;
 
-  function playChime() {
-    if (!soundEl) return;
-    const clone = soundEl.cloneNode();
-    clone.play().catch(() => {
-      // ignore autoplay errors
-    });
+  // --- Default panel text (shown on first load) ---
+  // This matches what you described: “Tap an ornament…”
+  function setDefaultPanel() {
+    titleEl.textContent = "Choose a tag to see your impact";
+    amountEl.textContent = "";
+    descEl.textContent =
+      "Tap an ornament on the tree to learn what your gift can provide – from warm socks and hygiene kits to hot meals and safe housing.";
   }
+
+  setDefaultPanel(); // keep intro text until the first click
 
   function setActiveTier(tierId) {
     const tier = tiers.find((t) => t.id === tierId);
@@ -79,10 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeTier = tier;
 
-    ornaments.forEach((orn) => {
-      orn.classList.toggle("vgt-active", orn.dataset.id === tierId);
-    });
+    // Toggle “active” class for glow effect
+    ornaments.forEach((orn) =>
+      orn.classList.toggle("vgt-active", orn.dataset.id === tierId)
+    );
 
+    // Update text panel
     titleEl.textContent = tier.title;
     amountEl.textContent =
       tier.amountLabel === "♥"
@@ -90,44 +94,46 @@ document.addEventListener("DOMContentLoaded", () => {
         : `Suggested gift: ${tier.amountLabel}`;
     descEl.textContent = tier.description;
 
-    // GA4 tracking for ornament selection
-    if (window.gtag) {
-      window.gtag("event", "vgt_select_tier", {
-        event_category: "Virtual Giving Tree",
-        event_label: tier.title,
-        tier_id: tier.id,
-        tier_amount: tier.amountLabel,
+    // Play chime (ignore errors if user hasn’t interacted yet on some browsers)
+    if (soundEl) {
+      try {
+        soundEl.currentTime = 0;
+        soundEl.play().catch(() => {});
+      } catch (e) {
+        console.warn("Sound play blocked:", e);
+      }
+    }
+
+    // GA4 tracking (safe-guard if gtag isn't present)
+    if (typeof gtag === "function") {
+      gtag("event", "vgt_select_tier", {
+        event_category: "virtual_giving_tree",
+        event_label: tierId,
+        value: tier.amountLabel === "♥" ? 0 : parseFloat(tier.amountLabel.replace("$", "")) || 0,
       });
     }
   }
 
+  // Click handlers for ornaments
   ornaments.forEach((orn) => {
     orn.addEventListener("click", () => {
       setActiveTier(orn.dataset.id);
-      playChime();
-    });
-
-    // small hover chime (optional, keep quiet)
-    orn.addEventListener("mouseenter", () => {
-      // playChime(); // uncomment if you actually want hover sound
     });
   });
 
+  // Donate button – always goes to main donation URL
   donateBtn.addEventListener("click", () => {
-    if (window.gtag) {
-      window.gtag("event", "vgt_click_donate", {
-        event_category: "Virtual Giving Tree",
-        event_label: activeTier ? activeTier.title : "No tier selected",
-        tier_id: activeTier ? activeTier.id : null,
-        tier_amount: activeTier ? activeTier.amountLabel : null,
+    if (typeof gtag === "function") {
+      gtag("event", "vgt_click_donate", {
+        event_category: "virtual_giving_tree",
+        event_label: activeTier ? activeTier.id : "no_tier_selected",
       });
     }
-
     if (DONATION_URL) {
-      window.open(DONATION_URL, "_blank", "noopener");
+      window.open(DONATION_URL, "_blank");
     }
   });
 
-  // Default selection when page loads
-  setActiveTier("warm-wishes");
+  // NOTE: we are intentionally *not* auto-calling setActiveTier(...)
+  // so the panel starts with the intro instructions instead of $5.
 });
