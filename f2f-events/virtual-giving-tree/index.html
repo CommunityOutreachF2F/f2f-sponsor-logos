@@ -6,61 +6,117 @@
   <title>Virtual Giving Tree</title>
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Google Analytics 4 (replace G-XXXXXXX with your real ID) -->
+  <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B39EKHT8QQ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-B39EKHT8QQ'); // TODO: swap with your GA4 Measurement ID
+    gtag("js", new Date());
+    gtag("config", "G-B39EKHT8QQ");
   </script>
 </head>
 <body>
   <div class="vgt-page">
-    <!-- Snow layer sits on top but ignores clicks -->
+
+    <!-- Snow overlay -->
     <div class="vgt-snow-layer" aria-hidden="true"></div>
 
-<!--
-<header class="vgt-header">
-  <h1>Virtual Giving Tree</h1>
-  <p>Pick a tag. Share some hope this holiday season.</p>
-</header>
--->
+    <!-- HEADER REMOVED INSIDE WIDGET -->
+    <!--
+    <header class="vgt-header">
+      <h1>Virtual Giving Tree</h1>
+      <p>Pick a tag. Share some hope this holiday season.</p>
+    </header>
+    -->
 
     <main class="vgt-main">
-<section class="vgt-tree-panel">
-  <div class="vgt-tree-image-wrap">
-    <img src="spruce-tree--primary.png" alt="Giving Tree" class="vgt-tree-image" />
-    <!-- ornaments stay where they are — just positioned absolutely over the image -->
-    <div class="vgt-ornament-layer">
-      <!-- your same ornament buttons go here -->
-    </div>
-  </div>
-</section>
 
+      <!-- =============== TREE PANEL =============== -->
+      <section class="vgt-tree-panel">
+        <div class="vgt-tree-image-wrap">
+
+          <!-- Tree image -->
+          <img src="spruce-tree--primary.png" alt="Giving Tree" class="vgt-tree-image" />
+
+          <!-- Star topper -->
+          <img src="star-topper.png" alt="" class="vgt-star">
+
+          <!-- Twinkling lights -->
+          <img src="lights.png" alt="" class="vgt-lights">
+
+          <!-- Ornaments Layer -->
+          <div class="vgt-ornament-layer">
+
+            <!-- 1. Warm Wishes ($5) -->
+            <button class="vgt-ornament" data-id="warm-wishes" style="top: 20%; left: 50%;">
+              <span class="vgt-amount">$5</span>
+            </button>
+
+            <!-- 2. Cozy Comfort ($10) -->
+            <button class="vgt-ornament" data-id="cozy-comfort" style="top: 32%; left: 28%;">
+              <span class="vgt-amount">$10</span>
+            </button>
+
+            <!-- 3. Fresh Start Kit ($25) -->
+            <button class="vgt-ornament" data-id="fresh-start-kit" style="top: 34%; left: 72%;">
+              <span class="vgt-amount">$25</span>
+            </button>
+
+            <!-- 4. Hot Meal & Hope ($50) -->
+            <button class="vgt-ornament" data-id="hot-meal-hope" style="top: 52%; left: 35%;">
+              <span class="vgt-amount">$50</span>
+            </button>
+
+            <!-- 5. Bridge to Stability ($100) -->
+            <button class="vgt-ornament" data-id="bridge-stability" style="top: 54%; left: 65%;">
+              <span class="vgt-amount">$100</span>
+            </button>
+
+            <!-- 6. Safe Housing ($250) -->
+            <button class="vgt-ornament" data-id="safe-housing" style="top: 68%; left: 50%;">
+              <span class="vgt-amount">$250</span>
+            </button>
+
+            <!-- 7. Give From the Heart (♥) -->
+            <button class="vgt-ornament" data-id="give-heart" style="top: 12%; left: 25%;">
+              <span class="vgt-amount">♥</span>
+            </button>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- =============== DETAILS PANEL =============== -->
       <section class="vgt-details-panel" aria-live="polite">
         <h2 id="vgt-detail-title">Choose a tag to see your impact</h2>
         <p id="vgt-detail-amount" class="vgt-detail-amount"></p>
         <p id="vgt-detail-description" class="vgt-detail-description">
           Tap an ornament on the tree to learn what your gift can provide – from warm socks and hygiene kits to hot meals and safe housing.
         </p>
+
         <button id="vgt-donate-button" class="vgt-donate-button">
           Give this gift
         </button>
 
         <p class="vgt-small-note">
-          You’ll enter your final gift amount on our secure online donation page. Every dollar helps decorate the Virtual Giving Tree with real support for people in recovery.
+          You’ll enter your final gift amount on our secure online donation page.
+          Every dollar helps decorate the Virtual Giving Tree with real support for people in recovery.
         </p>
       </section>
+
     </main>
 
     <footer class="vgt-footer">
-      <p>Foundations to Freedom &middot; Virtual Giving Tree</p>
+      <p>Foundations to Freedom · Virtual Giving Tree</p>
     </footer>
+
   </div>
 
-  <!-- Chime sound on hover/click -->
+  <!-- Sound FX -->
   <audio id="ornamentSound" src="ornament-chime.mp3" preload="auto"></audio>
+
+  <!-- Script -->
   <script src="script.js"></script>
+
 </body>
 </html>
