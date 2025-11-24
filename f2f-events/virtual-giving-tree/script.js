@@ -1,8 +1,7 @@
-// Donation target (your real PayPal link)
-const DONATION_URL =
-  "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
+// Donation URL – your PayPal Virtual Giving Tree link
+const DONATION_URL = "https://www.paypal.com/ncp/payment/SRV29WL8MNE5E";
 
-// Tier definitions
+// All tiers live here
 const tiers = [
   {
     id: "warm-wishes",
@@ -44,7 +43,7 @@ const tiers = [
     amountLabel: "$250",
     title: "One Week of Safe Housing",
     description:
-      "Contributes toward one week of safe, sober housing for someone in crisis. A secure place to sleep can be the first step toward long term recovery.",
+      "Contributes toward one week of safe, sober housing for someone in crisis. A secure place to sleep can be the first step toward long-term recovery.",
   },
   {
     id: "give-heart",
@@ -61,18 +60,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const amountEl = document.getElementById("vgt-detail-amount");
   const descEl = document.getElementById("vgt-detail-description");
   const donateBtn = document.getElementById("vgt-donate-button");
-  const ornamentSound = document.getElementById("ornamentSound");
+  const soundEl = document.getElementById("ornamentSound");
 
   let activeTier = null;
 
+  // Set labels on ornaments from the tiers array
+  ornaments.forEach((orn) => {
+    const id = orn.dataset.id;
+    const tier = tiers.find((t) => t.id === id);
+    const amountSpan = orn.querySelector(".vgt-amount");
+    if (tier && amountSpan) {
+      amountSpan.textContent = tier.amountLabel;
+    }
+  });
+
   function playChime() {
-    if (!ornamentSound) return;
+    if (!soundEl) return;
     try {
-      ornamentSound.currentTime = 0;
-      ornamentSound.play();
+      soundEl.currentTime = 0;
+      soundEl.play().catch(() => {});
     } catch (e) {
-      // ignore autoplay blocks
-      console.warn("Chime blocked:", e.message);
+      console.warn("Chime play error:", e);
     }
   }
 
@@ -82,51 +90,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeTier = tier;
 
-    ornaments.forEach((orn) =>
-      orn.classList.toggle("vgt-active", orn.dataset.id === tierId)
-    );
+    // Highlight correct ornament
+    ornaments.forEach((orn) => {
+      orn.classList.toggle("vgt-active", orn.dataset.id === tierId);
+    });
 
+    // Update text on the right
     titleEl.textContent = tier.title;
-    amountEl.textContent =
-      tier.amountLabel === "♥"
-        ? "Custom amount"
-        : `Suggested gift: ${tier.amountLabel}`;
+    if (tier.amountLabel === "♥") {
+      amountEl.textContent = "Custom amount";
+    } else {
+      amountEl.textContent = `Suggested gift: ${tier.amountLabel}`;
+    }
     descEl.textContent = tier.description;
 
     playChime();
-
-    // GA4 event (safe even if gtag doesn't exist)
-    if (typeof gtag === "function") {
-      gtag("event", "select_content", {
-        content_type: "virtual_giving_tree_tier",
-        item_id: tier.id,
-        value: tier.amountLabel,
-      });
-    }
   }
 
+  // Click handlers on ornaments
   ornaments.forEach((orn) => {
     orn.addEventListener("click", () => {
-      setActiveTier(orn.dataset.id);
+      const id = orn.dataset.id;
+      setActiveTier(id);
     });
   });
 
+  // Donate button just goes to your main donation URL
   donateBtn.addEventListener("click", () => {
-    if (typeof gtag === "function") {
-      gtag("event", "virtual_giving_tree_donate_click", {
-        method: "PayPal",
-        tier_id: activeTier?.id || null,
-      });
-    }
-
     if (DONATION_URL) {
-      window.open(DONATION_URL, "_blank");
+      window.open(DONATION_URL, "_blank", "noopener");
     }
   });
 
-  // INITIAL STATE: neutral intro message (no tier selected)
-  titleEl.textContent = "Choose a tag to see your impact";
-  amountEl.textContent = "";
-  descEl.textContent =
-    "Tap an ornament on the tree to learn what your gift can provide – from warm socks and hygiene kits to hot meals and safe housing.";
+  // IMPORTANT: do NOT set a default tier here.
+  // We leave the intro text from the HTML until the user clicks.
+  // If you ever want a default again, call: setActiveTier("warm-wishes");
 });
