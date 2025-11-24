@@ -172,45 +172,45 @@ body {
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
 }
 
-/* ====== Ornament positions (More Spread / Your Adjustments) ====== */
+/* ====== Ornament positions (spread out more) ====== */
 
-/* pink ♥ – upper left */
+/* Pink ♥ – upper left */
 .vgt-ornament[data-id="give-heart"] {
   top: 17%;
-  left: 36%;
+  left: 40%;
 }
 
-/* $5 gold — moved DOWN + RIGHT */
+/* $5 Gold – moved down + right */
 .vgt-ornament[data-id="warm-wishes"] {
   top: 30%;
-  left: 56%;
+  left: 55%;
 }
 
-/* $10 blue — unchanged */
+/* $10 Blue – stays good */
 .vgt-ornament[data-id="cozy-comfort"] {
-  top: 37%;
-  left: 33%;
+  top: 39%;
+  left: 38%;
 }
 
-/* $25 orange — moved DOWN */
+/* $25 Orange – pushed down more */
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 44%;
-  left: 72%;
+  top: 45%;
+  left: 65%;
 }
 
-/* $50 red — moved DOWN + LEFT */
+/* $50 Red – down + left */
 .vgt-ornament[data-id="hot-meal-hope"] {
-  top: 60%;
-  left: 32%;
+  top: 55%;
+  left: 34%;
 }
 
-/* $100 green — moved DOWN + RIGHT */
+/* $100 Green – down + right */
 .vgt-ornament[data-id="bridge-stability"] {
-  top: 61%;
-  left: 73%;
+  top: 60%;
+  left: 69%;
 }
 
-/* $250 purple — stays the same */
+/* $250 Purple – already good */
 .vgt-ornament[data-id="safe-housing"] {
   top: 72%;
   left: 50%;
