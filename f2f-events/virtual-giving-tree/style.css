@@ -174,46 +174,46 @@ body {
 
 /* ====== Ornament positions (spread out more) ====== */
 
-/* Pink ♥ – upper left */
+/* pink ♥ – upper left branch (leave mostly where it is) */
 .vgt-ornament[data-id="give-heart"] {
-  top: 17%;
+  top: 18%;
   left: 40%;
 }
 
-/* $5 Gold – moved down + right */
+/* $5 – gold: down and to the right a bit */
 .vgt-ornament[data-id="warm-wishes"] {
   top: 30%;
-  left: 55%;
+  left: 52%;
 }
 
-/* $10 Blue – stays good */
+/* $10 – blue: good where it is, tiny nudge so it isn’t touching gold */
 .vgt-ornament[data-id="cozy-comfort"] {
-  top: 39%;
-  left: 38%;
+  top: 38%;
+  left: 35%;
 }
 
-/* $25 Orange – pushed down more */
+/* $25 – orange: down more */
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 45%;
-  left: 65%;
+  top: 46%;
+  left: 58%;
 }
 
-/* $50 Red – down + left */
+/* $50 – red: down and to the left more */
 .vgt-ornament[data-id="hot-meal-hope"] {
   top: 55%;
-  left: 34%;
+  left: 32%;
 }
 
-/* $100 Green – down + right */
+/* $100 – green: down and to the right more */
 .vgt-ornament[data-id="bridge-stability"] {
   top: 60%;
-  left: 69%;
+  left: 63%;
 }
 
-/* $250 Purple – already good */
+/* $250 – purple: already good, just a tiny centering */
 .vgt-ornament[data-id="safe-housing"] {
   top: 72%;
-  left: 50%;
+  left: 48%;
 }
 
 /* ====== Details panel ====== */
