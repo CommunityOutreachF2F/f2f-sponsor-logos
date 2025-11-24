@@ -172,7 +172,7 @@ body {
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
 }
 
-/* ====== Ornament positions (Option B – medium spread) ====== */
+/* ====== Ornament positions (More Spread / Your Adjustments) ====== */
 
 /* pink ♥ – upper left */
 .vgt-ornament[data-id="give-heart"] {
@@ -180,37 +180,37 @@ body {
   left: 36%;
 }
 
-/* $5 – top center */
+/* $5 gold — moved DOWN + RIGHT */
 .vgt-ornament[data-id="warm-wishes"] {
-  top: 25%;
-  left: 53%;
+  top: 30%;
+  left: 56%;
 }
 
-/* $10 – upper-mid left */
+/* $10 blue — unchanged */
 .vgt-ornament[data-id="cozy-comfort"] {
   top: 37%;
   left: 33%;
 }
 
-/* $25 – upper-mid right */
+/* $25 orange — moved DOWN */
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 38%;
+  top: 44%;
   left: 72%;
 }
 
-/* $50 – mid-left */
+/* $50 red — moved DOWN + LEFT */
 .vgt-ornament[data-id="hot-meal-hope"] {
-  top: 52%;
-  left: 36%;
+  top: 60%;
+  left: 32%;
 }
 
-/* $100 – mid-right */
+/* $100 green — moved DOWN + RIGHT */
 .vgt-ornament[data-id="bridge-stability"] {
-  top: 55%;
-  left: 70%;
+  top: 61%;
+  left: 73%;
 }
 
-/* $250 – bottom center */
+/* $250 purple — stays the same */
 .vgt-ornament[data-id="safe-housing"] {
   top: 72%;
   left: 50%;
