@@ -172,48 +172,48 @@ body {
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
 }
 
-/* ====== Ornament positions (spread out to match sketch) ====== */
+/* ====== Ornament positions (spread out to match reference) ====== */
 
-/* pink ♥ – upper left branch */
+/* pink ♥ – higher & more left on upper branch */
 .vgt-ornament[data-id="give-heart"] {
-  top: 30%;
-  left: 33%;
+  top: 20%;
+  left: 30%;
 }
 
-/* $5 – high, slightly right of center */
+/* $5 – upper right of trunk, slightly below pink */
 .vgt-ornament[data-id="warm-wishes"] {
-  top: 34%;
-  left: 54%;
+  top: 27%;
+  left: 52%;
 }
 
-/* $10 – upper-mid left */
+/* $10 – left mid branch */
 .vgt-ornament[data-id="cozy-comfort"] {
-  top: 44%;
-  left: 37%;
+  top: 38%;
+  left: 32%;
 }
 
-/* $25 – upper-mid right */
+/* $25 – right mid-upper branch */
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 47%;
-  left: 66%;
+  top: 42%;
+  left: 62%;
 }
 
-/* $50 – mid-lower left */
+/* $50 – lower left, pushed out toward edge */
 .vgt-ornament[data-id="hot-meal-hope"] {
-  top: 60%;
-  left: 34%;
+  top: 56%;
+  left: 29%;
 }
 
-/* $100 – mid-lower right */
+/* $100 – lower right, pushed out toward edge */
 .vgt-ornament[data-id="bridge-stability"] {
-  top: 64%;
-  left: 66%;
+  top: 60%;
+  left: 60%;
 }
 
-/* $250 – lower center */
+/* $250 – lower center/right, a bit above base */
 .vgt-ornament[data-id="safe-housing"] {
-  top: 73%;
-  left: 50%;
+  top: 72%;
+  left: 46%;
 }
 
 /* ====== Details panel ====== */
