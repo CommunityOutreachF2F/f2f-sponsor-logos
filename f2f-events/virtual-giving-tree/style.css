@@ -1,14 +1,13 @@
+/* ====== Base layout ====== */
+
 :root {
-  --vgt-blue: #0054b8;
-  --vgt-blue-dark: #003b86;
+  --vgt-blue: #0b5ed7;
+  --vgt-green: #1c7c4d;
   --vgt-bg: #e8f1ff;
   --vgt-card-bg: #ffffff;
   --vgt-text: #1e2733;
   --vgt-muted: #5c6674;
-  --vgt-green: #1c7c4d;
 }
-
-/* Base layout -------------------------------------------------- */
 
 *,
 *::before,
@@ -18,9 +17,8 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  background: radial-gradient(circle at top, #f5fbff 0, #dde8ff 45%, #d5e2ff 100%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #e8f2ff, #d8e4ff);
   color: var(--vgt-text);
 }
 
@@ -28,153 +26,278 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   padding: 32px 16px 24px;
   position: relative;
+  overflow: hidden;
 }
 
-/* Snow layer (sits behind content, in front of background) ----- */
+/* ====== Snow overlay ====== */
 
 .vgt-snow-layer {
+  pointer-events: none;
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
-  opacity: 0.55;
+}
+
+.vgt-snow-layer::before,
+.vgt-snow-layer::after {
+  content: "";
+  position: absolute;
+  inset: -100px;
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0) 55px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0) 45px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.5) 0, rgba(255, 255, 255, 0) 35px);
-  background-size: 260px 260px, 210px 210px, 160px 160px;
+    radial-gradient(3px 3px at 20% 20%, rgba(255, 255, 255, 0.9) 0, transparent 55%),
+    radial-gradient(2px 2px at 80% 30%, rgba(255, 255, 255, 0.8) 0, transparent 55%),
+    radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.75) 0, transparent 55%),
+    radial-gradient(3px 3px at 70% 60%, rgba(255, 255, 255, 0.9) 0, transparent 55%);
+  background-size: 260px 260px;
+  opacity: 0.55;
   animation: vgt-snow-fall 22s linear infinite;
 }
 
+.vgt-snow-layer::after {
+  animation-duration: 32s;
+  opacity: 0.35;
+}
+
 @keyframes vgt-snow-fall {
-  0% {
-    background-position: 0 0, 80px -60px, -60px -40px;
-  }
-  100% {
-    background-position: 0 800px, 80px 740px, -60px 680px;
-  }
+  from { transform: translate3d(0, -80px, 0); }
+  to   { transform: translate3d(0, 120px, 0); }
 }
 
-/* Make all main content sit above snow */
-.vgt-page > *:not(.vgt-snow-layer) {
-  position: relative;
-  z-index: 1;
-}
-
-/* Main two-column layout --------------------------------------- */
+/* ====== Main layout ====== */
 
 .vgt-main {
+  position: relative;
+  z-index: 1; /* sit above snow */
   max-width: 1120px;
-  width: 100%;
-  margin: 0 auto 24px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 24px;
 }
 
-.vgt-tree-panel,
-.vgt-details-panel {
-  background: var(--vgt-card-bg);
-  border-radius: 24px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
-  padding: 24px;
-}
-
-/* Tree card with background scene ------------------------------ */
+/* ====== Tree panel ====== */
 
 .vgt-tree-panel {
+  position: relative;
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
   overflow: hidden;
-  padding: 0;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* snowy background image behind the tree */
+.vgt-tree-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("background.png") center/cover no-repeat;
+  opacity: 1;
+  z-index: 0;
 }
 
 .vgt-tree-image-wrap {
   position: relative;
-  width: 100%;
-  max-width: 540px;
-  margin: 0 auto;
-  padding: 32px 32px 36px;
-  background: url("background.png") center/cover no-repeat;
+  z-index: 1; /* in front of background, behind snow overlay */
+  width: min(430px, 80vw);
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .vgt-tree-image {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
   display: block;
-  pointer-events: none;
 }
 
-/* Ornaments ---------------------------------------------------- */
-
+/* layer that holds all ornaments */
 .vgt-ornament-layer {
   position: absolute;
-  inset: 32px 32px 36px 32px; /* match padding of wrap */
-  pointer-events: none;
+  inset: 4% 18% 8% 18%; /* tighter box around the tree body */
 }
 
-/* Each ornament is a button with PNG + text overlay */
+/* ====== Ornaments ====== */
+
 .vgt-ornament {
   position: absolute;
-  width: 78px;
-  height: 78px;
-  transform: translate(-50%, -50%);
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  padding: 0;
   border: none;
   background: transparent;
-  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  outline: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .vgt-ornament img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
   display: block;
 }
 
+/* amount label over the ornament */
 .vgt-amount {
   position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.95rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 0 4px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
 }
 
-/* Slight bump for active ornament */
+/* active ornament state */
 .vgt-ornament.vgt-active {
-  transform: translate(-50%, -52%);
+  transform: translate(-50%, -50%) scale(1.06);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
 }
 
-/* Ornament positions (tweak as needed) ------------------------- */
+/* ====== Ornament positions (based on your sketch) ====== */
 
-/* Pink heart – near top-left of tree */
+/* pink ♥ – upper left branch */
 .vgt-ornament[data-id="give-heart"] {
   top: 19%;
+  left: 33%;
+}
+
+/* $5 – near upper center */
+.vgt-ornament[data-id="warm-wishes"] {
+  top: 26%;
+  left: 52%;
+}
+
+/* $10 – upper-mid left */
+.vgt-ornament[data-id="cozy-comfort"] {
+  top: 37%;
   left: 37%;
 }
 
-/* $5 – gold, near top of tree */
-.vgt-ornament[data-id="warm-wishes"] {
-  top: 26%;
-  left: 54%;
-}
-
-/* $10 – blue, upper left */
-.vgt-ornament[data-id="cozy-comfort"] {
-  top: 39%;
-  left: 38%;
-}
-
-/* $25 – orange, upper right */
+/* $25 – upper-mid right */
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 40%;
-  left: 63%;
+  top: 39%;
+  left: 67%;
 }
 
-/* $50 – red, mid-left */
-.vgt-orn
+/* $50 – mid-left */
+.vgt-ornament[data-id="hot-meal-hope"] {
+  top: 53%;
+  left: 39%;
+}
+
+/* $100 – mid-right */
+.vgt-ornament[data-id="bridge-stability"] {
+  top: 55%;
+  left: 67%;
+}
+
+/* $250 – lower center */
+.vgt-ornament[data-id="safe-housing"] {
+  top: 71%;
+  left: 50%;
+}
+
+/* ====== Details panel ====== */
+
+.vgt-details-panel {
+  border-radius: 24px;
+  background: var(--vgt-card-bg);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  padding: 28px 28px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vgt-details-panel h1,
+.vgt-details-panel h2 {
+  margin: 0 0 4px;
+  color: var(--vgt-blue);
+}
+
+#vgt-detail-amount {
+  margin: 0 0 6px;
+  font-weight: 700;
+  color: var(--vgt-green);
+}
+
+.vgt-detail-description {
+  margin: 0 0 14px;
+  color: var(--vgt-text);
+}
+
+.vgt-donate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 26px;
+  border-radius: 999px;
+  border: none;
+  background: var(--vgt-blue);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.98rem;
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(11, 94, 215, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.vgt-donate-button:hover {
+  background: #094ab0;
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(11, 94, 215, 0.55);
+}
+
+.vgt-small-note {
+  margin-top: 10px;
+  font-size: 0.86rem;
+  color: var(--vgt-muted);
+}
+
+/* ====== Footer ====== */
+
+.vgt-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--vgt-muted);
+}
+
+/* ====== Responsive ====== */
+
+@media (max-width: 900px) {
+  .vgt-main {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .vgt-tree-panel,
+  .vgt-details-panel {
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .vgt-page {
+    padding: 20px 10px 18px;
+  }
+}
