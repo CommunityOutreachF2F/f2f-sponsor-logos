@@ -172,47 +172,47 @@ body {
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
 }
 
-/* ====== Ornament positions (based on your sketch) ====== */
+/* ====== Ornament positions (Option B – medium spread) ====== */
 
-/* pink ♥ – upper left branch */
+/* pink ♥ – upper left */
 .vgt-ornament[data-id="give-heart"] {
-  top: 19%;
-  left: 33%;
+  top: 17%;
+  left: 36%;
 }
 
-/* $5 – near upper center */
+/* $5 – top center */
 .vgt-ornament[data-id="warm-wishes"] {
-  top: 26%;
-  left: 52%;
+  top: 25%;
+  left: 53%;
 }
 
 /* $10 – upper-mid left */
 .vgt-ornament[data-id="cozy-comfort"] {
   top: 37%;
-  left: 37%;
+  left: 33%;
 }
 
 /* $25 – upper-mid right */
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 39%;
-  left: 67%;
+  top: 38%;
+  left: 72%;
 }
 
 /* $50 – mid-left */
 .vgt-ornament[data-id="hot-meal-hope"] {
-  top: 53%;
-  left: 39%;
+  top: 52%;
+  left: 36%;
 }
 
 /* $100 – mid-right */
 .vgt-ornament[data-id="bridge-stability"] {
   top: 55%;
-  left: 67%;
+  left: 70%;
 }
 
-/* $250 – lower center */
+/* $250 – bottom center */
 .vgt-ornament[data-id="safe-housing"] {
-  top: 71%;
+  top: 72%;
   left: 50%;
 }
 
