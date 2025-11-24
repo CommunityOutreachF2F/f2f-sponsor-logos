@@ -172,48 +172,48 @@ body {
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
 }
 
-/* ====== Ornament positions (spread out more) ====== */
+/* ====== Ornament positions (based on your sketch & tweaks) ====== */
 
-/* pink ♥ – upper left branch (leave mostly where it is) */
+/* pink ♥ – upper left branch (unchanged) */
 .vgt-ornament[data-id="give-heart"] {
-  top: 18%;
-  left: 40%;
+  top: 19%;
+  left: 33%;
 }
 
-/* $5 – gold: down and to the right a bit */
+/* $5 – gold: moved slightly DOWN + RIGHT */
 .vgt-ornament[data-id="warm-wishes"] {
-  top: 30%;
-  left: 52%;
+  top: 31%;
+  left: 55%;
 }
 
-/* $10 – blue: good where it is, tiny nudge so it isn’t touching gold */
+/* $10 – blue: upper-mid left (unchanged) */
 .vgt-ornament[data-id="cozy-comfort"] {
-  top: 38%;
-  left: 35%;
+  top: 37%;
+  left: 37%;
 }
 
-/* $25 – orange: down more */
+/* $25 – orange: moved a bit further DOWN */
 .vgt-ornament[data-id="fresh-start-kit"] {
-  top: 46%;
-  left: 58%;
+  top: 45%;
+  left: 67%;
 }
 
-/* $50 – red: down and to the left more */
+/* $50 – red: moved DOWN + LEFT */
 .vgt-ornament[data-id="hot-meal-hope"] {
-  top: 55%;
-  left: 32%;
+  top: 58%;
+  left: 33%;
 }
 
-/* $100 – green: down and to the right more */
+/* $100 – green: moved DOWN + RIGHT */
 .vgt-ornament[data-id="bridge-stability"] {
-  top: 60%;
-  left: 63%;
+  top: 61%;
+  left: 70%;
 }
 
-/* $250 – purple: already good, just a tiny centering */
+/* $250 – purple: lower center (unchanged) */
 .vgt-ornament[data-id="safe-housing"] {
-  top: 72%;
-  left: 48%;
+  top: 71%;
+  left: 50%;
 }
 
 /* ====== Details panel ====== */
