@@ -120,7 +120,11 @@ body {
 /* layer that holds all ornaments */
 .vgt-ornament-layer {
   position: absolute;
-  inset: 4% 18% 8% 18%; /* tighter box around the tree body */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* ornaments still clickable individually */
 }
 
 /* ====== Ornaments ====== */
