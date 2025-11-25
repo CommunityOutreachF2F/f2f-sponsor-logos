@@ -178,22 +178,22 @@ body {
 
 /* ====== Ornament positions (spread out to match reference) ====== */
 
-/* pink ♥ – higher & more left on upper branch */
+/* pink ♥ – move onto upper left branches */
 .vgt-ornament[data-id="give-heart"] {
-  top: 20%;
-  left: 30%;
+  top: 23%;
+  left: 38%;
 }
 
-/* $5 – upper right of trunk, slightly below pink */
+/* $5 gold – nudge right so it’s more centered on the upper branches */
 .vgt-ornament[data-id="warm-wishes"] {
-  top: 27%;
+  top: 30%;
   left: 52%;
 }
 
-/* $10 – left mid branch */
+/* $10 blue – move down so it’s on the tree more solidly */
 .vgt-ornament[data-id="cozy-comfort"] {
-  top: 38%;
-  left: 32%;
+  top: 39%;
+  left: 40%;
 }
 
 /* $25 – right mid-upper branch */
@@ -208,9 +208,9 @@ body {
   left: 29%;
 }
 
-/* $100 – lower right, pushed out toward edge */
+/* $100 green – move down/right a bit */
 .vgt-ornament[data-id="bridge-stability"] {
-  top: 60%;
+  top: 56%;
   left: 60%;
 }
 
